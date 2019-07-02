@@ -1,0 +1,26 @@
+Version 0.2:
+	- Major refactoring of region functions. No more horrible hard coding
+	- Removed the broken sort function. New one to come
+	- Should be a bit faster with string splitting
+
+Version 0.3:
+	- Additional refactoring of Hook function
+
+Version 0.4:
+	- Fixed dependencies bug
+Version 0.4.1:
+	- Changed to default strsplit function (maybe improves speed)?
+
+Version 0.4.2:
+	- Filtered out nil values extracted from the LFG pane
+	- Properly detects person from your server (and therefore should highlight it)
+	- Highlights players from your server with light blue region text
+
+Version 1.0:
+	- Differentiation for NA data centres
+	- Some spelling mistakes made which would have broken server detection fixed
+	- Now colours your home server and labels it [HOME]. 
+	- Colours home data centre if you're on an NA server.
+Version 1.1:
+	- Updated to work with 8.1.5
+
