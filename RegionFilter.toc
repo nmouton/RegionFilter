@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: Region Filter
 ## Notes: Tags groups in the native LFG search if they are from your server and data-centre
 ## Version: 1.2
