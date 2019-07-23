@@ -124,6 +124,7 @@ function RegionFilter:InstallHookNA(realms, label)
 			end
 		end
 	end)
+	hooksecurefunc("LFGListUtil_SortSearchResults", RegionFilter:FilterLFGResults)
 end
 
 function RegionFilter:InstallHookEU(realms, label)
@@ -153,6 +154,13 @@ function RegionFilter:InstallHookEU(realms, label)
 		end
 	end)
 end
+
+function RegionFilter:FilterLFGResults(results)
+
+
+end
+
+
 
 
 --> At loadtime
