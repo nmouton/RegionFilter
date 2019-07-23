@@ -29,7 +29,6 @@ realm = string.gsub(realm_unsubbed, "'", "")
 -- Create variables for the namespace of this addon.
 -- This lets you reference the variables inside servers.lua
 local addonName, addonTable = ...
-local servers = addonTable.servers
 
 -- NA posts
 na_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4NA|r Server"
@@ -45,6 +44,20 @@ it_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4IT|r Server"
 ru_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4RU|r Server"
 es_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4ES|r Server"
 
+function hasValue(input_table, value)
+	for index, value in pairs(input_table) do
+		if value == val then
+			return true
+		end
+	end
+	return false
+end
+
+function tableConcat(destination, origin)
+    for _, v in pairs(origin) do
+        destination.insert(v)
+    end
+end
 
 
 -- Check the region of each group and highlights if its in your region. This code runs on a region per region basis. See below.
@@ -58,9 +71,9 @@ function RegionFilter:InstallHookNA(realms, label)
 			if string.match(LN1, "-") then -- If the string has a hyphen in it split it up
 				local name, server = strsplit("-", LN1, 2) -- Split string with a maximum of two splits according to the "-"" delimiter
 				server_subbed = string.gsub(server, "'", "" ) -- Remove the internal quotes from server names
-				if realms == na_realms then
-					
-					for _, v in ipairs(servers.na_la) do		
+
+				if realms == 'na_realms' then
+					for _, v in pairs(addonTable.servers.na_la) do		
 						if v == server_subbed then
 							local activityName = C_LFGList.GetActivityInfo(activityID1)
 							if server_id == 'la' then
@@ -72,7 +85,7 @@ function RegionFilter:InstallHookNA(realms, label)
 						end
 					end
 
-					for _, v in ipairs(servers.na_nyc) do
+					for _, v in pairs(addonTable.servers.na_nyc) do
 						if v == server_subbed then
 							local activityName = C_LFGList.GetActivityInfo(activityID1)
 							if server_id == 'nyc' then
@@ -84,7 +97,7 @@ function RegionFilter:InstallHookNA(realms, label)
 						end
 					end
 
-					for _, v in ipairs(servers.na_chicago) do
+					for _, v in pairs(addonTable.servers.na_chicago) do
 						if v == server_subbed then
 							local activityName = C_LFGList.GetActivityInfo (activityID1)
 							if server_id == 'chicago' then
@@ -96,7 +109,7 @@ function RegionFilter:InstallHookNA(realms, label)
 						end
 					end
 
-					for _, v in ipairs(servers.na_phoenix) do
+					for _, v in pairs(addonTable.servers.na_phoenix) do
 						if v == server_subbed then
 							local activityName = C_LFGList.GetActivityInfo (activityID1)
 							if server_id == 'phoenix' then
@@ -107,8 +120,8 @@ function RegionFilter:InstallHookNA(realms, label)
 							self.ActivityName:SetTextColor (0, 1, 0)
 						end
 					end
-				else if realms ~= na_realms then
-					for _, v in ipairs(realms) do
+				else if realms ~= 'na_realms' then
+					for _, v in pairs(realms) do
 						if v == server_subbed then
 							local activityName = C_LFGList.GetActivityInfo (activityID1)
 							self.ActivityName:SetText ("|cFFFFFF00["..label.."]|r " .. activityName)
@@ -124,8 +137,40 @@ function RegionFilter:InstallHookNA(realms, label)
 			end
 		end
 	end)
-	hooksecurefunc("LFGListUtil_SortSearchResults", RegionFilter:FilterLFGResults)
+	
+	hooksecurefunc ("LFGListUtil_SortSearchResults", function (results)
+		for idx = #results, 1, -1 do
+			local resultID = results[idx]
+			local searchResults = C_LFGList.GetSearchResultInfo(resultID)
+			local activitiyID1 = searchResults.activityID
+			local LN1 = searchResults.leaderName
+	
+			if LN1 ~= nil then
+				if string.match(LN1, "-") then
+					local name, server = strsplit("-", LN1, 2)
+					local server_subbed = string.gsub(server, "'", "")
+	
+					if realms == 'na_realms' then
+						for _, i in pairs(addonTable.servers.master_na) do
+							for _, v in pairs(i) do
+								print(v, server_subbed)
+								print(type(v))
+								print(type(server_subbed))
+								if v == server_subbed then
+									-- print('NA Server:', server_subbed)
+								else
+									-- print('removed', server_subbed)
+									table.remove(results, idx)
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end)
 end
+
 
 function RegionFilter:InstallHookEU(realms, label)
 	hooksecurefunc ("LFGListSearchEntry_Update", function (self) 
@@ -138,7 +183,7 @@ function RegionFilter:InstallHookEU(realms, label)
 				local name, server = strsplit("-", LN1, 2) --> Split string with a maximum of two splits according to the "-"" delimiter
 				server_subbed = string.gsub(server, "'", "" ) --> Remove the internal quotes from server names
 
-				for _, v in ipairs(realms) do
+				for _, v in pairs(realms) do
 					if v == server_subbed then
 						local activityName = C_LFGList.GetActivityInfo (activityID1)
 						self.ActivityName:SetText ("|cFFFFFF00["..label.."]|r " .. activityName)
@@ -155,20 +200,9 @@ function RegionFilter:InstallHookEU(realms, label)
 	end)
 end
 
-function RegionFilter:FilterLFGResults(results)
-
-
-end
-
-
-
-
 --> At loadtime
 function RegionFilter:OnInitialize()
 	local time = 10
-	
-	-- Server requires
-	print(debugstack())
 	--> Print to the console some version stuff
 	local z = CreateFrame("Frame")
 	z:RegisterEvent("PLAYER_LOGIN")
@@ -180,54 +214,54 @@ function RegionFilter:OnInitialize()
 	my_locale = GetLocale()
 
 	if (GetLocale() == "enUS") then
-		--> Iterate over the different NA regions. If it hits any of them run the na_realms function which will differntiate inside
-		for _, v in ipairs(servers.na_nyc) do
+		--> Iterate over the different NA regions. If it hits any of them run the 'na_realms' function which will differntiate inside
+		for _, v in pairs(addonTable.servers.na_nyc) do
 			if realm == v then
-				RegionFilter:ScheduleTimer ("InstallHookNA", time, na_realms, 'NA')
+				RegionFilter:ScheduleTimer ("InstallHookNA", time, 'na_realms', 'NA')
 				print(na_post)
 				server_id = 'nyc'
 			end
 		end
 
-		for _, v in ipairs(servers.na_chicago) do
+		for _, v in pairs(addonTable.servers.na_chicago) do
 			if realm == v then
-				RegionFilter:ScheduleTimer ("InstallHookNA", time, na_realms, 'NA')
+				RegionFilter:ScheduleTimer ("InstallHookNA", time, 'na_realms', 'NA')
 				print(na_post)
 				server_id = 'chicago'
 			end
 		end
 
-		for _, v in ipairs(servers.na_la) do
+		for _, v in pairs(addonTable.servers.na_la) do
 			if realm == v then
-				RegionFilter:ScheduleTimer ("InstallHookNA", time, na_realms, 'NA')
+				RegionFilter:ScheduleTimer ("InstallHookNA", time, 'na_realms', 'NA')
 				print(na_post)
 				server_id = 'la'
 			end
 		end
 
-		for _, v in ipairs(servers.na_phoenix) do
+		for _, v in pairs(addonTable.servers.na_phoenix) do
 			if realm == v then
-				RegionFilter:ScheduleTimer ("InstallHookNA", time, na_realms, 'NA')
+				RegionFilter:ScheduleTimer ("InstallHookNA", time, 'na_realms', 'NA')
 				print(na_post)
 				server_id = 'phoenix'
 			end
 		end
 
-		for _, v in ipairs(servers.br_realms) do
+		for _, v in pairs(addonTable.servers.br_realms) do
 			if realm == v then
 				RegionFilter:ScheduleTimer ("InstallHookNA", time, br_realms, 'BR')
 				print(br_post)
 			end
 		end
 
-		for _, v in ipairs(servers.la_realms) do
+		for _, v in pairs(addonTable.servers.la_realms) do
 			if realm == v then
 				RegionFilter:ScheduleTimer ("InstallHookNA", time, la_realms, 'LA')
 				print(la_post)
 			end
 		end
 
-		for _, v in ipairs(servers.oc_realms) do
+		for _, v in pairs(addonTable.servers.oc_realms) do
 			if realm == v then
 				RegionFilter:ScheduleTimer ("InstallHookNA", time, oc_realms, 'OC')
 				print(oc_post)
@@ -235,42 +269,42 @@ function RegionFilter:OnInitialize()
 		end
 
 	else --> Do EU realms because the locale code was not enUS
-		for _, v in ipairs(servers.eu_en_realms) do
+		for _, v in pairs(addonTable.servers.eu_en_realms) do
 			if realm == v then 
 				RegionFilter:ScheduleTimer ("InstallHookEU", time, eu_en_realms, 'EN')
 				print(en_post)
 			end
 		end	
 
-		for _, v in ipairs(servers.eu_de_realms) do
+		for _, v in pairs(addonTable.servers.eu_de_realms) do
 			if realm == v then 
 				RegionFilter:ScheduleTimer ("InstallHookEU", time, eu_fr_realms, 'FR')
 				print(de_post)
 			end
 		end	
 
-		for _, v in ipairs(servers.eu_es_realms) do
+		for _, v in pairs(addonTable.servers.eu_es_realms) do
 			if realm == v then 
 				RegionFilter:ScheduleTimer ("InstallHookEU", time, eu_es_realms, 'ES')
 				print(es_post)
 			end
 		end	
 
-		for _, v in ipairs(servers.eu_it_realms) do
+		for _, v in pairs(addonTable.servers.eu_it_realms) do
 			if realm == v then 
 				RegionFilter:ScheduleTimer ("InstallHookEU", time, eu_it_realms, 'IT')
 				print(it_post)
 			end
 		end	
 
-		for _, v in ipairs(servers.eu_ru_realms) do
+		for _, v in pairs(addonTable.servers.eu_ru_realms) do
 			if realm == v then 
 				RegionFilter:ScheduleTimer ("InstallHookEU", time, eu_ru_realms, 'RU')
 				print(ru_post)
 			end
 		end	
 
-		for _, v in ipairs(servers.eu_fr_realms) do
+		for _, v in pairs(addonTable.servers.eu_fr_realms) do
 			if realm == v then 
 				RegionFilter:ScheduleTimer ("InstallHookEU", time, eu_fr_realms, 'RU')
 				print(fr_post)

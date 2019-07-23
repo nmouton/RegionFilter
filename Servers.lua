@@ -3,6 +3,8 @@
 local addonName, addonTable = ...
 addonTable.servers = {}
 
+
+
 addonTable.servers.na_nyc = {
     "AeriePeak",
     "AltarofStorms",
@@ -275,7 +277,7 @@ addonTable.servers.eu_en_realms = {
     "Alonsus",
     "Anachronos",
     "Bronzebeard",
-    "Aerie Peak",
+    "AeriePeak",
     "BladesEdge",
     "Veknilash",
     "Eonar",
@@ -510,4 +512,11 @@ addonTable.servers.eu_ru_realms = {
 addonTable.servers.eu_it_realms = {
     "WellofEternity",
     "Nemsis",
+}
+
+addonTable.servers.master_na = {
+    addonTable.servers.na_nyc,
+    addonTable.servers.na_chicago,
+    addonTable.servers.na_phoenix,
+    addonTable.servers.na_la
 }
