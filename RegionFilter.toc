@@ -7,4 +7,5 @@
 libs.xml
 #@end-no-lib-strip@
 
-RegionFilter.lua
+main.lua
+servers.lua

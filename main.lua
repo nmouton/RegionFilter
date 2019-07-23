@@ -26,6 +26,9 @@ na_chicago_id = 'NA-CHI'
 realm_unsubbed = GetRealmName()
 realm = string.gsub(realm_unsubbed, "'", "")
 
+local addonName, addonTable = ...
+print(addonTable.servers.na_nyc)
+
 -- NA posts
 na_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4NA|r Server"
 oc_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4OC|r Server"
@@ -40,8 +43,7 @@ it_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4IT|r Server"
 ru_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4RU|r Server"
 es_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4ES|r Server"
 
--- Server requires
-local servers = require("servers.lua")
+
 
 -- Check the region of each group and highlights if its in your region. This code runs on a region per region basis. See below.
 function RegionFilter:InstallHookNA(realms, label)
@@ -56,7 +58,7 @@ function RegionFilter:InstallHookNA(realms, label)
 				server_subbed = string.gsub(server, "'", "" ) -- Remove the internal quotes from server names
 				if realms == na_realms then
 					
-					for _, v in ipairs(na_la) do		
+					for _, v in ipairs(servers.na_la) do		
 						if v == server_subbed then
 							local activityName = C_LFGList.GetActivityInfo(activityID1)
 							if server_id == 'la' then
@@ -68,7 +70,7 @@ function RegionFilter:InstallHookNA(realms, label)
 						end
 					end
 
-					for _, v in ipairs(na_nyc) do
+					for _, v in ipairs(servers.na_nyc) do
 						if v == server_subbed then
 							local activityName = C_LFGList.GetActivityInfo(activityID1)
 							if server_id == 'nyc' then
@@ -80,7 +82,7 @@ function RegionFilter:InstallHookNA(realms, label)
 						end
 					end
 
-					for _, v in ipairs(na_chicago) do
+					for _, v in ipairs(servers.na_chicago) do
 						if v == server_subbed then
 							local activityName = C_LFGList.GetActivityInfo (activityID1)
 							if server_id == 'chicago' then
@@ -92,7 +94,7 @@ function RegionFilter:InstallHookNA(realms, label)
 						end
 					end
 
-					for _, v in ipairs(na_phoenix) do
+					for _, v in ipairs(servers.na_phoenix) do
 						if v == server_subbed then
 							local activityName = C_LFGList.GetActivityInfo (activityID1)
 							if server_id == 'phoenix' then
@@ -154,6 +156,8 @@ end
 --> At loadtime
 function RegionFilter:OnInitialize()
 	local time = 10
+	-- Server requires
+	print(debugstack())
 	--> Print to the console some version stuff
 	local z = CreateFrame("Frame")
 	z:RegisterEvent("PLAYER_LOGIN")
@@ -163,7 +167,6 @@ function RegionFilter:OnInitialize()
 		end
 	end)
 	my_locale = GetLocale()
-	print(my_locale)
 
 	if (GetLocale() == "enUS") then
 		--> Iterate over the different NA regions. If it hits any of them run the na_realms function which will differntiate inside
