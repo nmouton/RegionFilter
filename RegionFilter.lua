@@ -665,7 +665,7 @@ function RegionFilter:OnInitialize()
 	z:RegisterEvent("PLAYER_LOGIN")
 	z:SetScript("OnEvent", function(f, event)
 		if event == "PLAYER_LOGIN" then
-			print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.1|r. If there any bugs please report them via https://wow.curseforge.com/projects/regionfilter")
+			print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.2|r. If there any bugs please report them via https://wow.curseforge.com/projects/regionfilter or https://github.com/jamesb93/RegionFilter")
 		end
 	end)
 	my_locale = GetLocale()
