@@ -24,37 +24,6 @@ RF.myRealm = string.gsub(realm_unsubbed, "'", "")
 ---- Set variables for realm/data-centre info ----
 RF:setRegionRealmLabel(RF.myRealm)
 
----- Utility Functions ----
-function isin(input_table, val)
-	for index, value in pairs(input_table) do
-		if value == val then
-			return true
-		end
-	end
-	return false
-end
-
-function sanitiseName(leaderName)
-	-- returns name, realm when passed a name-realm full name
-	if string.match(leaderName, "-") then
-		local t_name, t_realm = strsplit("-", leaderName, 2)
-		local t_realm = string.gsub(t_realm, "'", "")
-		return t_name, t_realm
-	else
-		
-		local t_name = leaderName
-		local t_realm = RF.myRealm
-		return t_name, t_realm
-	end
-end
-
-function splitName(leaderName)
-	-- returns name, realm when passed a name-realm full name
-	local t_name, t_realm = strsplit("-", leaderName, 2)
-	local t_realm = string.gsub(t_realm, "'", "")
-	return t_name, t_realm
-end
-
 ---- Labelling and Removing Functions
 function RF.removeEntriesNA(results)
 	if RF.togRemove == 1 then
@@ -64,11 +33,11 @@ function RF.removeEntriesNA(results)
 			local activitiyID1 = searchResults.activityID
 			local leaderName = searchResults.leaderName
 			if leaderName ~= nil then
-				local name, realm = sanitiseName(leaderName)
-				if isin(servers.na_nyc, realm)
-				or isin(servers.na_la, realm)
-				or isin(servers.na_chicago, realm)
-				or isin(servers.na_phoenix, realm) then
+				local name, realm = RF:sanitiseName(leaderName)
+				if RF:isin(servers.na_nyc, realm)
+				or RF:isin(servers.na_la, realm)
+				or RF:isin(servers.na_chicago, realm)
+				or RF:isin(servers.na_phoenix, realm) then
 					-- do nothing
 				else
 					table.remove(results, idx)
@@ -87,12 +56,12 @@ function RF.updateEntriesNA(results)
 	local leaderName = searchResults.leaderName
 
 	if leaderName ~= nil then -- Filter out nil entries from LFG Pane
-		if string.match(leaderName, "-") then -- If the string has a hyphen in it split it up
+		if string.match(leaderName, "-") then -- If the string has a hyphen in it RF:splitName it up
 			local name, realm = splitName(leaderName)
 
 			if RF.realms == 'na_realms' then
 				-- Looping through the server lists to determine the naming
-				if isin(servers.na_la, realm) then
+				if RF:isin(servers.na_la, realm) then
 					local activityName = C_LFGList.GetActivityInfo(activityID)
 					if RF.server_id == 'la' then
 						results.ActivityName:SetText ("|cFF00CCFF["..cat.na_la_id.."]|r " .. activityName)
@@ -102,7 +71,7 @@ function RF.updateEntriesNA(results)
 					results.ActivityName:SetTextColor (0, 1, 0)
 				end
 
-				if isin(servers.na_nyc, realm) then
+				if RF:isin(servers.na_nyc, realm) then
 					local activityName = C_LFGList.GetActivityInfo(activityID)
 					if RF.server_id == 'nyc' then
 						results.ActivityName:SetText ("|cFF00CCFF["..cat.na_nyc_id.."]|r " .. activityName)
@@ -112,7 +81,7 @@ function RF.updateEntriesNA(results)
 					results.ActivityName:SetTextColor (0, 1, 0)
 				end
 
-				if isin(servers.na_chicago, realm) then
+				if RF:isin(servers.na_chicago, realm) then
 					local activityName = C_LFGList.GetActivityInfo (activityID)
 					if RF.server_id == 'chicago' then
 						results.ActivityName:SetText ("|cFF00CCFF["..cat.na_chicago_id.."]|r " .. activityName)
@@ -122,7 +91,7 @@ function RF.updateEntriesNA(results)
 					results.ActivityName:SetTextColor (0, 1, 0)
 				end
 
-				if isin(servers.na_phoenix, realm) then
+				if RF:isin(servers.na_phoenix, realm) then
 					local activityName = C_LFGList.GetActivityInfo (activityID)
 					if RF.server_id == 'phoenix' then
 						results.ActivityName:SetText ("|cFF00CCFF["..cat.na_phoenix_id.."]|r " .. activityName)
@@ -183,8 +152,8 @@ end)
 -- 		local leaderName = table.leaderName
 		
 -- 		if leaderName ~= nil then --> Filter out nil entries from LFG Pane
--- 			if string.match(leaderName, "-") then --> If the string has a hyphen in it split it up (this separates home server from non home server)
--- 				local name, server = strsplit("-", leaderName, 2) --> Split string with a maximum of two splits according to the "-"" delimiter
+-- 			if string.match(leaderName, "-") then --> If the string has a hyphen in it RF:splitName it up (this separates home server from non home server)
+-- 				local name, server = strsplit("-", leaderName, 2) --> RF:splitName string with a maximum of two splits according to the "-"" delimiter
 -- 				server_subbed = string.gsub(server, "'", "" ) --> Remove the internal quotes from server names
 
 -- 				for _, v in pairs(realms) do
