@@ -145,19 +145,20 @@ function updateEntriesNA(results)
 					end
 				end
 			end
-		end
 		else -- home server
+			print('home server', leaderName)
 			local activityName = C_LFGList.GetActivityInfo (activityID)
 			results.ActivityName:SetText ("|cFF00CCFF["..cat.home.."]|r " .. activityName)
 			results.ActivityName:SetTextColor (0, 1, 0)
 		end
 	end
+end
 
 
 -- Check the region of each group and highlights if its in your region. This code runs on a region per region basis. See below.
 function RegionFilter:FilterNA(realms, label)
 
-	-- hooksecurefunc ("LFGListUtil_SortSearchResults", removeEntriesNA)
+	hooksecurefunc ("LFGListUtil_SortSearchResults", removeEntriesNA)
 
 	hooksecurefunc ("LFGListSearchEntry_Update", updateEntriesNA)
 	
