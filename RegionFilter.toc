@@ -1,7 +1,7 @@
 ## Interface: 80200
 ## Title: Region Filter
 ## Notes: Tags groups in the native LFG search if they are from your server and data-centre
-## Version: 1.2
+## Version: 1.3
 
 #@no-lib-strip@
 libs.xml
