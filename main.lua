@@ -10,10 +10,10 @@ SLASH_RFILTER1 = "/rfilter"
 SlashCmdList["RFILTER"] = function(msg)
 	if RF.togRemove == 1 then
 		RF.togRemove = 0
-		print('|cff00ffff[Region Filter]|: Not filtering outside regions')
+		print('|cff00ffff[Region Filter]: |cffFF6EB4 Not filtering outside regions')
 	elseif RF.togRemove == 0 then
 		RF.togRemove = 1
-		print('|cff00ffff[Region Filter]|: Filtering outside regions')
+		print('|cff00ffff[Region Filter]: |cffFF6EB4 Filtering outside regions')
 	end
 	RF.UpdateList()
 end
@@ -41,7 +41,6 @@ function RF.removeEntriesNA(results)
 					-- do nothing
 				else
 					table.remove(results, idx)
-				-- TODO account for entries where there is no realm (home server)
 				end	
 			end
 		end
@@ -57,7 +56,7 @@ function RF.updateEntriesNA(results)
 
 	if leaderName ~= nil then -- Filter out nil entries from LFG Pane
 		if string.match(leaderName, "-") then -- If the string has a hyphen in it RF:splitName it up
-			local name, realm = splitName(leaderName)
+			local name, realm = RF:splitName(leaderName)
 
 			if RF.realms == 'na_realms' then
 				-- Looping through the server lists to determine the naming
@@ -101,14 +100,13 @@ function RF.updateEntriesNA(results)
 					results.ActivityName:SetTextColor (0, 1, 0)
 				end
 
-			elseif RF.realms ~= 'na_realms' then
-				for _, v in pairs(realms) do
-					if v == server_subbed then
-						local activityName = C_LFGList.GetActivityInfo (activityID)
-						results.ActivityName:SetText ("|cFFFFFF00["..RF.label.."]|r " .. activityName)
-						results.ActivityName:SetTextColor (0, 1, 0)
-					end
-				end
+			-- elseif RF.realms ~= 'na_realms' then
+			-- 	if RF:isin(RF.realms, realm) then
+			-- 		local activityName = C_LFGList.GetActivityInfo (activityID)
+			-- 		results.ActivityName:SetText ("|cFFFFFF00["..RF.label.."]|r " .. activityName)
+			-- 		results.ActivityName:SetTextColor (0, 1, 0)
+			-- 	end
+			-- end
 			end
 		else -- home server
 			local activityName = C_LFGList.GetActivityInfo (activityID)
@@ -124,6 +122,7 @@ welcomePrompt:RegisterEvent("PLAYER_LOGIN")
 welcomePrompt:SetScript("OnEvent", function(f, event)
 	if event == "PLAYER_LOGIN" then
 		print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.3|r. If there any bugs please report them via https://wow.curseforge.com/projects/regionfilter or https://github.com/jamesb93/RegionFilter")
+		print(RF.postType)
 	end
 end)
 
@@ -132,11 +131,9 @@ local LFGOpened = CreateFrame ("frame", nil, UIParent)
 LFGOpened:RegisterEvent ("LFG_LIST_SEARCH_RESULTS_RECEIVED")
 
 function RF.UpdateList()
-	LFGListSearchPanel_UpdateResultList (LFGListFrame.SearchPanel)
-	LFGListSearchPanel_UpdateResults (LFGListFrame.SearchPanel)
 	-- Call the two functions which filter and label LFG entries --
-	hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntriesNA)
 	hooksecurefunc ("LFGListSearchEntry_Update", RF.updateEntriesNA)
+	hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntriesNA)
 end
 
 LFGOpened:SetScript ("OnEvent", function (self, event, ...)

@@ -514,14 +514,17 @@ RF.servers.eu_it_realms = {
 ---- Posts ----
 RF.posts = {}
 -- NA posts
-RF.posts.na_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4NA|r Server"
+RF.posts.na_nyc_post     = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4NA-NYC|r Server"
+RF.posts.na_la_post      = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4NA-LA|r Server"
+RF.posts.na_chicago_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4NA-CHI|r Server"
+RF.posts.na_phoenix_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4NA-PHX|r Server"
 RF.posts.oc_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4OC|r Server"
-RF.posts.br_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4BR|r Server"
+RF.posts.br_post = "|cff00ffff[Region Filter]:|r You are an on a |cffFF6EB4BR|r Server"
 RF.posts.la_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4LA|r Server"
 
 -- EU posts
 RF.posts.en_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4EN|r Server"
-RF.posts.de_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4DE|r Server"
+RF.posts.de_post = "|cff00ffff[Region Filter]:|r You are an on a |cffFF6EB4DE|r Server"
 RF.posts.fr_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4FR|r Server"
 RF.posts.it_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4IT|r Server"
 RF.posts.ru_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4RU|r Server"

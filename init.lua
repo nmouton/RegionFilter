@@ -4,48 +4,50 @@ local posts = RF.posts
 
 function RF:setRegionRealmLabel(ownRealm)
 	if (GetLocale() == "enUS") then
-		--> Iterate over the different NA regions. If it hits any of them run the 'na_realms' function which will differntiate inside
 		if RF:isin(servers.na_nyc, ownRealm) then
 			RF.realms = 'na_realms'
 			RF.label = 'NA'
 			RF.server_id = 'nyc'
-			print(posts.na_post)
+			RF.postType = posts.na_nyc_post
 		end
 
 		if RF:isin(servers.na_chicago, ownRealm) then
 			RF.realms = 'na_realms'
 			RF.label = 'NA'
 			RF.server_id = 'chicago'
-			print(posts.na_post)
+			RF.postType = posts.na_chicago_post
 		end
 
 		if RF:isin(servers.na_la, ownRealm) then
 			RF.realms = 'na_realms'
 			RF.label = 'NA'
 			RF.server_id = 'la'
-			print(posts.na_post)
+			RF.postType = posts.na_la_posts
 		end
 
 		if RF:isin(servers.na_phoenix, ownRealm) then
 			RF.realms = 'na_realms'
 			RF.label = 'NA'
 			RF.server_id = 'phoenix'
-			print(posts.na_post)
+			RF.postType = posts.na_phoenix_post
 		end
 
-		if RF:isin(servers.br_realms, ownRealm) then
+        if RF:isin(servers.br_realms, ownRealm) then
+            RF.realms = servers.br_realms
 			RF.label = 'BR'
-			print(posts.br_post)
+			RF.postType = posts.br_post
 		end
 
-		if RF:isin(servers.la_realms, ownRealm) then
+        if RF:isin(servers.la_realms, ownRealm) then
+            RF.realms = servers.la_realms
 			RF.label = 'LA'
-			print(posts.la_post)
+			RF.postType = posts.la_post
 		end
 
-		if RF:isin(servers.oc_realms, ownRealm) then
+        if RF:isin(servers.oc_realms, ownRealm) then
+            RF.realms = servers.oc_realms
 			RF.label = 'OC'
-			print(posts.oc_post)
+			RF.postType = posts.oc_post
 		end
 
 	else --> Do EU realms because the locale code was not enUS
