@@ -1,27 +1,11 @@
-RegionFilter = LibStub ("AceAddon-3.0"):NewAddon ("RegionFilter", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")
-
-local RegionFilter = RegionFilter
-
----- Crucical code to detect when the LFG pane is opened ----
-local LFGOpened = CreateFrame ("frame", nil, UIParent)
-LFGOpened:RegisterEvent ("LFG_LIST_SEARCH_RESULTS_RECEIVED")
-
-function RegionFilter:UpdateList()
-	LFGListSearchPanel_UpdateResultList (LFGListFrame.SearchPanel)
-	LFGListSearchPanel_UpdateResults (LFGListFrame.SearchPanel)
-end
-
-LFGOpened:SetScript ("OnEvent", function (self, event, ...)
-	-- When the LFG panel is opened called the above function --
-	RegionFilter:ScheduleTimer ("UpdateList", 1)
-	print('opened LFG')
-end)
-
 RF = select(2, ...)
 servers = RF.servers
 posts = RF.posts
 cat = RF.cat
 
+RF.realms = 'na_realms'
+RF.label = 'NA'
+RF.server_id = 'nyc'
 RF.togRemove = 1
 
 SLASH_RFILTER1 = "/rfilter"
@@ -33,12 +17,13 @@ SlashCmdList["RFILTER"] = function(msg)
 		RF.togRemove = 1
 		print('|cff00ffff[Region Filter]|: Filtering outside regions')
 	end
+	RF.UpdateList()
 end
 
 local realm_unsubbed = GetRealmName()
 RF.myRealm = string.gsub(realm_unsubbed, "'", "")
 
----- Useful functions ----
+---- Utility Functions ----
 function isin(input_table, val)
 	for index, value in pairs(input_table) do
 		if value == val then
@@ -69,16 +54,8 @@ function splitName(leaderName)
 	return t_name, t_realm
 end
 
--- function colourActivity(self, server_id, activityName, activityID)
--- 	local activityName = C_LFGList.GetActivityInfo(activityID)
--- 	if server_id == 'la' then
--- 		self.ActivityName:SetText ("|cFF00CCFF["..na_la_id.."]|r " .. activityName)
--- 	else
--- 		self.ActivityName:SetText ("|cFFFFFF00["..na_la_id.."]|r " .. activityName)
--- 	end
--- 	self.ActivityName:SetTextColor (0, 1, 0)
--- end
-function removeEntriesNA(results)
+---- Labelling and Removing Functions
+function RF.removeEntriesNA(results)
 	if RF.togRemove == 1 then
 		for idx = #results, 1, -1 do
 			local resultID = results[idx]
@@ -103,7 +80,7 @@ function removeEntriesNA(results)
 
 end
 
-function updateEntriesNA(results)
+function RF.updateEntriesNA(results)
 	local searchResults = C_LFGList.GetSearchResultInfo(results.resultID)
 	local activityID = searchResults.activityID
 	local leaderName = searchResults.leaderName
@@ -171,61 +148,40 @@ function updateEntriesNA(results)
 	end
 end
 
+---- Print When Loaded ----
+local welcomePrompt = CreateFrame("Frame")
+welcomePrompt:RegisterEvent("PLAYER_LOGIN")
+welcomePrompt:SetScript("OnEvent", function(f, event)
+	if event == "PLAYER_LOGIN" then
+		print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.3|r. If there any bugs please report them via https://wow.curseforge.com/projects/regionfilter or https://github.com/jamesb93/RegionFilter")
+	end
+end)
 
--- Check the region of each group and highlights if its in your region. This code runs on a region per region basis. See below.
-function RegionFilter:FilterNA()
-	hooksecurefunc ("LFGListUtil_SortSearchResults", removeEntriesNA)
-	hooksecurefunc ("LFGListSearchEntry_Update", updateEntriesNA)
+---- Crucical code to detect when the LFG pane is opened ----
+local LFGOpened = CreateFrame ("frame", nil, UIParent)
+LFGOpened:RegisterEvent ("LFG_LIST_SEARCH_RESULTS_RECEIVED")
+
+function RF.UpdateList()
+	LFGListSearchPanel_UpdateResultList (LFGListFrame.SearchPanel)
+	LFGListSearchPanel_UpdateResults (LFGListFrame.SearchPanel)
+	-- Call the two functions which filter and label LFG entries --
+	hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntriesNA)
+	hooksecurefunc ("LFGListSearchEntry_Update", RF.updateEntriesNA)
 end
 
+LFGOpened:SetScript ("OnEvent", function (self, event, ...)
+	-- When the LFG panel is opened called the above function --
+	RF.UpdateList()
+end)
 
-function RegionFilter:FilterEU(realms, label)
-	hooksecurefunc ("LFGListSearchEntry_Update", function (self) 
-		local table = C_LFGList.GetSearchResultInfo(self.resultID)
-		local activityID1 = table.activityID
-		local leaderName = table.leaderName
-		
-		if leaderName ~= nil then --> Filter out nil entries from LFG Pane
-			if string.match(leaderName, "-") then --> If the string has a hyphen in it split it up (this separates home server from non home server)
-				local name, server = strsplit("-", leaderName, 2) --> Split string with a maximum of two splits according to the "-"" delimiter
-				server_subbed = string.gsub(server, "'", "" ) --> Remove the internal quotes from server names
 
-				for _, v in pairs(realms) do
-					if v == server_subbed then
-						local activityName = C_LFGList.GetActivityInfo (activityID1)
-						self.ActivityName:SetText ("|cFFFFFF00["..label.."]|r " .. activityName)
-						self.ActivityName:SetTextColor (0, 1, 0)
-					end
-				end
-			end
-
-		else
-			local activityName = C_LFGList.GetActivityInfo (activityID1)
-			self.ActivityName:SetText ("|cFF00CCFF["..home.."]|r " .. activityName)
-			self.ActivityName:SetTextColor (0, 1, 0)
-		end
-	end)
-end
-
---> At loadtime
-function RegionFilter:OnInitialize()
-	local time = 10
-	--> Print to the console some version stuff
-	local z = CreateFrame("Frame")
-	z:RegisterEvent("PLAYER_LOGIN")
-	z:SetScript("OnEvent", function(f, event)
-		if event == "PLAYER_LOGIN" then
-			print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.3|r. If there any bugs please report them via https://wow.curseforge.com/projects/regionfilter or https://github.com/jamesb93/RegionFilter")
-		end
-	end)
-
+function setRegionRealmLabel()
 	if (GetLocale() == "enUS") then
 		--> Iterate over the different NA regions. If it hits any of them run the 'na_realms' function which will differntiate inside
 		if isin(servers.na_nyc, RF.myRealm) then
 			RF.realms = 'na_realms'
 			RF.label = 'NA'
 			RF.server_id = 'nyc'
-			RegionFilter:ScheduleTimer ("FilterNA", time)
 			print(posts.na_post)
 		end
 
@@ -233,7 +189,6 @@ function RegionFilter:OnInitialize()
 			RF.realms = 'na_realms'
 			RF.label = 'NA'
 			RF.server_id = 'chicago'
-			RegionFilter:ScheduleTimer ("FilterNA", time)
 			print(posts.na_post)
 		end
 
@@ -241,7 +196,6 @@ function RegionFilter:OnInitialize()
 			RF.realms = 'na_realms'
 			RF.label = 'NA'
 			RF.server_id = 'la'
-			RegionFilter:ScheduleTimer ("FilterNA", time)
 			print(posts.na_post)
 		end
 
@@ -249,57 +203,78 @@ function RegionFilter:OnInitialize()
 			RF.realms = 'na_realms'
 			RF.label = 'NA'
 			RF.server_id = 'phoenix'
-			RegionFilter:ScheduleTimer ("FilterNA", time)
 			print(posts.na_post)
 		end
 
 		if isin(servers.br_realms, RF.myRealm) then
 			RF.label = 'BR'
-			RegionFilter:ScheduleTimer ("FilterNA", time, 'br_realms', 'BR')
 			print(posts.br_post)
 		end
 
 		if isin(servers.la_realms, RF.myRealm) then
 			RF.label = 'LA'
-			RegionFilter:ScheduleTimer ("FilterNA", time, 'la_realms', 'LA')
 			print(posts.la_post)
 		end
 
 		if isin(servers.oc_realms, RF.myRealm) then
 			RF.label = 'OC'
-			RegionFilter:ScheduleTimer ("FilterNA", time, 'oc_realms', 'OC')
 			print(posts.oc_post)
 		end
 
 	else --> Do EU realms because the locale code was not enUS
 		if isin(servers.eu_en_realms, RF.myRealm) then
-			RegionFilter:ScheduleTimer ("FilterEU", time, 'eu_en_realms', 'EN')
 			print(posts.en_post)
 		end	
 
 		if isin(servers.eu_de_realms, RF.myRealm) then
-			RegionFilter:ScheduleTimer ("FilterEU", time, 'eu_fr_realms', 'FR')
 			print(posts.de_post)
 		end	
 
 		if isin(servers.eu_es_realms, RF.myRealm) then
-			RegionFilter:ScheduleTimer ("FilterEU", time, 'eu_es_realms', 'ES')
 			print(posts.es_post)
 		end	
 
 		if isin(servers.eu_it_realms, RF.myRealm) then
-			RegionFilter:ScheduleTimer ("FilterEU", time, 'eu_it_realms', 'IT')
 			print(posts.it_post)
 		end	
 
 		if isin(servers.eu_ru_realms, RF.myRealm) then
-			RegionFilter:ScheduleTimer ("FilterEU", time, 'eu_ru_realms', 'RU')
 			print(posts.ru_post)
 		end	
 
 		if isin(servers.eu_fr_realms, RF.myRealm) then
-			RegionFilter:ScheduleTimer ("FilterEU", time, 'eu_fr_realms', 'RU')
 			print(posts.fr_post)
 		end	
-	end 
+	end
 end
+
+
+-------- Legacy Code --------
+
+-- function RegionFilter:FilterEU(realms, label)
+-- 	hooksecurefunc ("LFGListSearchEntry_Update", function (self) 
+-- 		local table = C_LFGList.GetSearchResultInfo(self.resultID)
+-- 		local activityID1 = table.activityID
+-- 		local leaderName = table.leaderName
+		
+-- 		if leaderName ~= nil then --> Filter out nil entries from LFG Pane
+-- 			if string.match(leaderName, "-") then --> If the string has a hyphen in it split it up (this separates home server from non home server)
+-- 				local name, server = strsplit("-", leaderName, 2) --> Split string with a maximum of two splits according to the "-"" delimiter
+-- 				server_subbed = string.gsub(server, "'", "" ) --> Remove the internal quotes from server names
+
+-- 				for _, v in pairs(realms) do
+-- 					if v == server_subbed then
+-- 						local activityName = C_LFGList.GetActivityInfo (activityID1)
+-- 						self.ActivityName:SetText ("|cFFFFFF00["..label.."]|r " .. activityName)
+-- 						self.ActivityName:SetTextColor (0, 1, 0)
+-- 					end
+-- 				end
+-- 			end
+
+-- 		else
+-- 			local activityName = C_LFGList.GetActivityInfo (activityID1)
+-- 			self.ActivityName:SetText ("|cFF00CCFF["..home.."]|r " .. activityName)
+-- 			self.ActivityName:SetTextColor (0, 1, 0)
+-- 		end
+-- 	end)
+-- end
