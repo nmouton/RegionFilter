@@ -2,9 +2,6 @@
 
 local addonName, addonTable = ...
 addonTable.servers = {}
-
-
-
 addonTable.servers.na_nyc = {
     "AeriePeak",
     "AltarofStorms",
@@ -514,9 +511,8 @@ addonTable.servers.eu_it_realms = {
     "Nemsis",
 }
 
-addonTable.servers.master_na = {
-    addonTable.servers.na_nyc,
-    addonTable.servers.na_chicago,
-    addonTable.servers.na_phoenix,
-    addonTable.servers.na_la
-}
+-- addonTable.servers.master_na = {}
+-- tableConcat(addonTable.servers.master_na, addonTable.servers.na_nyc)
+-- tableConcat(addonTable.servers.master_na, addonTable.servers.na_chicago)
+-- tableConcat(addonTable.servers.master_na, addonTable.servers.na.phoenix)
+-- tableConcat(addonTable.servers.master_na, addonTable.servers.na_la)

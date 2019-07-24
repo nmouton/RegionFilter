@@ -44,7 +44,7 @@ it_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4IT|r Server"
 ru_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4RU|r Server"
 es_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4ES|r Server"
 
-function hasValue(input_table, value)
+function isin(input_table, val)
 	for index, value in pairs(input_table) do
 		if value == val then
 			return true
@@ -53,74 +53,73 @@ function hasValue(input_table, value)
 	return false
 end
 
-function tableConcat(destination, origin)
-    for _, v in pairs(origin) do
-        destination.insert(v)
-    end
+-- returns name, realm when passed a name-realm full name
+function sanitiseName(leaderName)
+	local t_name, t_server = strsplit("-", leaderName, 2)
+	local t_server = string.gsub(t_server, "'", "")
+	return t_name, t_server
+end
+
+function getTimeZone(realm)
+	id, name, nameForAPI, rules, locale, _, region, timezone, connectedIDs, englishName, englishNameForAPI = LibStub("LibRealmInfo"):GetRealmInfo(realm)
+	return name, region, timezone
 end
 
 
 -- Check the region of each group and highlights if its in your region. This code runs on a region per region basis. See below.
 function RegionFilter:InstallHookNA(realms, label)
 	hooksecurefunc ("LFGListSearchEntry_Update", function (self) 
-		local table = C_LFGList.GetSearchResultInfo(self.resultID)
-		local activityID1 = table.activityID
-		local LN1 = table.leaderName
+		local searchResults = C_LFGList.GetSearchResultInfo(self.resultID)
+		local activityID1 = searchResults.activityID
+		local leaderName = searchResults.leaderName
 
-		if LN1 ~= nil then -- Filter out nil entries from LFG Pane
-			if string.match(LN1, "-") then -- If the string has a hyphen in it split it up
-				local name, server = strsplit("-", LN1, 2) -- Split string with a maximum of two splits according to the "-"" delimiter
-				server_subbed = string.gsub(server, "'", "" ) -- Remove the internal quotes from server names
+		if leaderName ~= nil then -- Filter out nil entries from LFG Pane
+			if string.match(leaderName, "-") then -- If the string has a hyphen in it split it up
+				local name, server = sanitiseName(leaderName)
 
 				if realms == 'na_realms' then
-					for _, v in pairs(addonTable.servers.na_la) do		
-						if v == server_subbed then
-							local activityName = C_LFGList.GetActivityInfo(activityID1)
-							if server_id == 'la' then
-								self.ActivityName:SetText ("|cFF00CCFF["..na_la_id.."]|r " .. activityName)
-							else
-								self.ActivityName:SetText ("|cFFFFFF00["..na_la_id.."]|r " .. activityName)
-							end
-							self.ActivityName:SetTextColor (0, 1, 0)
+					-- Looping through the server lists to determine the naming
+					if isin(addonTable.servers.na_la, server) then
+						local activityName = C_LFGList.GetActivityInfo(activityID1)
+						if server_id == 'la' then
+							self.ActivityName:SetText ("|cFF00CC00["..na_la_id.."]|r " .. activityName)
+						else
+							self.ActivityName:SetText ("|cFF00CC00["..na_la_id.."]|r " .. activityName)
 						end
+						self.ActivityName:SetTextColor (0, 1, 0)
 					end
 
-					for _, v in pairs(addonTable.servers.na_nyc) do
-						if v == server_subbed then
-							local activityName = C_LFGList.GetActivityInfo(activityID1)
-							if server_id == 'nyc' then
-								self.ActivityName:SetText ("|cFF00CCFF["..na_nyc_id.."]|r " .. activityName)
-							else
-								self.ActivityName:SetText ("|cFFFFFF00["..na_nyc_id.."]|r " .. activityName)
-							end
-							self.ActivityName:SetTextColor (0, 1, 0)
+					if isin(addonTable.servers.na_nyc, server) then
+						local activityName = C_LFGList.GetActivityInfo(activityID1)
+						if server_id == 'nyc' then
+							self.ActivityName:SetText ("|cFF00CC00["..na_nyc_id.."]|r " .. activityName)
+						else
+							self.ActivityName:SetText ("|cFF00CC00["..na_nyc_id.."]|r " .. activityName)
 						end
+						self.ActivityName:SetTextColor (0, 1, 0)
 					end
 
-					for _, v in pairs(addonTable.servers.na_chicago) do
-						if v == server_subbed then
-							local activityName = C_LFGList.GetActivityInfo (activityID1)
-							if server_id == 'chicago' then
-								self.ActivityName:SetText ("|cFF00CCFF["..na_chicago_id.."]|r " .. activityName)
-							else
-								self.ActivityName:SetText ("|cFFFFFF00["..na_chicago_id.."]|r " .. activityName)
-							end
-							self.ActivityName:SetTextColor (0, 1, 0)
+					if isin(addonTable.servers.na_chicago, server) then
+						local activityName = C_LFGList.GetActivityInfo (activityID1)
+						if server_id == 'chicago' then
+							self.ActivityName:SetText ("|cFF00CC00["..na_chicago_id.."]|r " .. activityName)
+						else
+							self.ActivityName:SetText ("|cFF00CC00["..na_chicago_id.."]|r " .. activityName)
 						end
+						self.ActivityName:SetTextColor (0, 1, 0)
 					end
 
-					for _, v in pairs(addonTable.servers.na_phoenix) do
-						if v == server_subbed then
-							local activityName = C_LFGList.GetActivityInfo (activityID1)
-							if server_id == 'phoenix' then
-								self.ActivityName:SetText ("|cFF00CCFF["..na_phoenix_id.."]|r " .. activityName)
-							else
-								self.ActivityName:SetText ("|cFFFFFF00["..na_phoenix_id.."]|r " .. activityName)
-							end
-							self.ActivityName:SetTextColor (0, 1, 0)
+					if isin(addonTable.servers.na_phoenix, server) then
+						local activityName = C_LFGList.GetActivityInfo (activityID1)
+						if server_id == 'phoenix' then
+							self.ActivityName:SetText ("|cFF00CC00["..na_phoenix_id.."]|r " .. activityName)
+						else
+							self.ActivityName:SetText ("|cFF00CC00["..na_phoenix_id.."]|r " .. activityName)
 						end
+						self.ActivityName:SetTextColor (0, 1, 0)
 					end
-				else if realms ~= 'na_realms' then
+
+				elseif realms ~= 'na_realms' then
 					for _, v in pairs(realms) do
 						if v == server_subbed then
 							local activityName = C_LFGList.GetActivityInfo (activityID1)
@@ -130,12 +129,12 @@ function RegionFilter:InstallHookNA(realms, label)
 					end
 				end
 			end
+			-- Home Server
 			else
 				local activityName = C_LFGList.GetActivityInfo (activityID1)
 				self.ActivityName:SetText ("|cFF00CCFF["..home.."]|r " .. activityName)
 				self.ActivityName:SetTextColor (0, 1, 0)
 			end
-		end
 	end)
 	
 	hooksecurefunc ("LFGListUtil_SortSearchResults", function (results)
@@ -143,30 +142,24 @@ function RegionFilter:InstallHookNA(realms, label)
 			local resultID = results[idx]
 			local searchResults = C_LFGList.GetSearchResultInfo(resultID)
 			local activitiyID1 = searchResults.activityID
-			local LN1 = searchResults.leaderName
+			local leaderName = searchResults.leaderName
 	
-			if LN1 ~= nil then
-				if string.match(LN1, "-") then
-					local name, server = strsplit("-", LN1, 2)
-					local server_subbed = string.gsub(server, "'", "")
-	
-					if realms == 'na_realms' then
-						for _, i in pairs(addonTable.servers.master_na) do
-							for _, v in pairs(i) do
-								print(v, server_subbed)
-								print(type(v))
-								print(type(server_subbed))
-								if v == server_subbed then
-									-- print('NA Server:', server_subbed)
-								else
-									-- print('removed', server_subbed)
-									table.remove(results, idx)
-								end
-							end
-						end
+			if leaderName ~= nil then
+				if string.match(leaderName, "-") then
+					local name, realm = sanitiseName(leaderName)
+
+					if isin(addonTable.servers.na_nyc, realm)
+					or isin(addonTable.servers.na_la, realm)
+					or isin(addonTable.servers.na_chicago, realm)
+					or isin(addonTable.servers.na_phoenix, realm) then
+					else
+						print('Removed: ', realm)
+						table.remove(results, idx)
+					-- TODO account for entries where there is no realm (home server)
 					end
 				end
 			end
+
 		end
 	end)
 end
@@ -176,11 +169,11 @@ function RegionFilter:InstallHookEU(realms, label)
 	hooksecurefunc ("LFGListSearchEntry_Update", function (self) 
 		local table = C_LFGList.GetSearchResultInfo(self.resultID)
 		local activityID1 = table.activityID
-		local LN1 = table.leaderName
+		local leaderName = table.leaderName
 		
-		if LN1 ~= nil then --> Filter out nil entries from LFG Pane
-			if string.match(LN1, "-") then --> If the string has a hyphen in it split it up (this separates home server from non home server)
-				local name, server = strsplit("-", LN1, 2) --> Split string with a maximum of two splits according to the "-"" delimiter
+		if leaderName ~= nil then --> Filter out nil entries from LFG Pane
+			if string.match(leaderName, "-") then --> If the string has a hyphen in it split it up (this separates home server from non home server)
+				local name, server = strsplit("-", leaderName, 2) --> Split string with a maximum of two splits according to the "-"" delimiter
 				server_subbed = string.gsub(server, "'", "" ) --> Remove the internal quotes from server names
 
 				for _, v in pairs(realms) do
