@@ -1,8 +1,8 @@
--- This is a list of all the addonTable.servers. It is much much easier to keep it all in here --
+-- This is a list of all the RF.servers. It is much much easier to keep it all in here --
 
-local addonName, addonTable = ...
-addonTable.servers = {}
-addonTable.servers.na_nyc = {
+RF = select(2, ...)
+RF.servers = {}
+RF.servers.na_nyc = {
     "AeriePeak",
     "AltarofStorms",
     "AlteracMountains",
@@ -63,7 +63,7 @@ addonTable.servers.na_nyc = {
     "Zuluhed"
 }
 
-addonTable.servers.na_chicago = {
+RF.servers.na_chicago = {
     "Agamaggan",
     "Aggramar",
     "Alexstrasza",
@@ -135,7 +135,7 @@ addonTable.servers.na_chicago = {
     "Zuljin"
 }
 
-addonTable.servers.na_phoenix = {
+RF.servers.na_phoenix = {
     "Antonidas",
     "Anubarak",
     "BlackwaterRaiders",
@@ -176,7 +176,7 @@ addonTable.servers.na_phoenix = {
     "WyrmrestAccord"
 }
 
-addonTable.servers.na_la = {
+RF.servers.na_la = {
     "Aegwynn",
     "Akama",
     "Arathor",
@@ -240,7 +240,7 @@ addonTable.servers.na_la = {
     "Windrunner"
 }
 
-addonTable.servers.br_realms = {
+RF.servers.br_realms = {
     "Azralon",
     "Nemesis",
     "Goldrinn",
@@ -248,13 +248,13 @@ addonTable.servers.br_realms = {
     "Gallywix"
 }
 
-addonTable.servers.la_realms = {
+RF.servers.la_realms = {
     "QuelThalas",
     "Drakkari",
     "Ragnaros"
 }
 
-addonTable.servers.oc_realms = {
+RF.servers.oc_realms = {
     "AmanThul",
     "Barthilas",
     "Caelestrasz",
@@ -269,7 +269,7 @@ addonTable.servers.oc_realms = {
     "Thaurissan",
 }
 
-addonTable.servers.eu_en_realms = {
+RF.servers.eu_en_realms = {
     "KulTiras",
     "Alonsus",
     "Anachronos",
@@ -368,7 +368,7 @@ addonTable.servers.eu_en_realms = {
     "DefiasBrotherhood",
 }
 
-addonTable.servers.eu_fr_realms = {
+RF.servers.eu_fr_realms = {
     "Chantséternels",
     "Voljin",
     "Elune",
@@ -403,7 +403,7 @@ addonTable.servers.eu_fr_realms = {
     "ConseildesOmbres",
 }
 
-addonTable.servers.eu_de_realms = {
+RF.servers.eu_de_realms = {
     "Gilneas",
     "Ulduar",
     "Garrosh",
@@ -483,7 +483,7 @@ addonTable.servers.eu_de_realms = {
     "DasKonsortium",
 }
 
-addonTable.servers.eu_es_realms = {
+RF.servers.eu_es_realms = {
     "Exodar",
     "Minahonda",
     "ColinasPardas",
@@ -495,7 +495,7 @@ addonTable.servers.eu_es_realms = {
     "Uldum",
 }
 
-addonTable.servers.eu_ru_realms = {
+RF.servers.eu_ru_realms = {
     "Подземье",
     "Разувий",
     "Корольлич",
@@ -506,13 +506,33 @@ addonTable.servers.eu_ru_realms = {
     "Термоштепсел",
 }
 
-addonTable.servers.eu_it_realms = {
+RF.servers.eu_it_realms = {
     "WellofEternity",
     "Nemsis",
 }
 
--- addonTable.servers.master_na = {}
--- tableConcat(addonTable.servers.master_na, addonTable.servers.na_nyc)
--- tableConcat(addonTable.servers.master_na, addonTable.servers.na_chicago)
--- tableConcat(addonTable.servers.master_na, addonTable.servers.na.phoenix)
--- tableConcat(addonTable.servers.master_na, addonTable.servers.na_la)
+---- Posts ----
+RF.posts = {}
+-- NA posts
+RF.posts.na_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4NA|r Server"
+RF.posts.oc_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4OC|r Server"
+RF.posts.br_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4BR|r Server"
+RF.posts.la_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4LA|r Server"
+
+-- EU posts
+RF.posts.en_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4EN|r Server"
+RF.posts.de_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4DE|r Server"
+RF.posts.fr_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4FR|r Server"
+RF.posts.it_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4IT|r Server"
+RF.posts.ru_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4RU|r Server"
+RF.posts.es_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4ES|r Server"
+
+---- Categorisation Strings ----
+-- These are used to differentiate the NA data centres.
+-- Other locations just use their own label
+RF.cat = {}
+RF.cat.home = 'HOME'
+RF.cat.na_nyc_id = 'NA-NYC'
+RF.cat.na_la_id = 'NA-LA'
+RF.cat.na_phoenix_id = 'NA-PHX'
+RF.cat.na_chicago_id = 'NA-CHI'
