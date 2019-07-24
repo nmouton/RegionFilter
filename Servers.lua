@@ -1,6 +1,6 @@
 -- This is a list of all the RF.servers. It is much much easier to keep it all in here --
 
-RF = select(2, ...)
+local RF = select(2, ...)
 RF.servers = {}
 RF.servers.na_nyc = {
     "AeriePeak",

@@ -1,11 +1,9 @@
-RF = select(2, ...)
-servers = RF.servers
-posts = RF.posts
-cat = RF.cat
+local RF = select(2, ...)
+local servers = RF.servers
+local posts = RF.posts
+local cat = RF.cat
 
-RF.realms = 'na_realms'
-RF.label = 'NA'
-RF.server_id = 'nyc'
+-- By default filter outside data centers to yes --
 RF.togRemove = 1
 
 SLASH_RFILTER1 = "/rfilter"
@@ -22,6 +20,9 @@ end
 
 local realm_unsubbed = GetRealmName()
 RF.myRealm = string.gsub(realm_unsubbed, "'", "")
+
+---- Set variables for realm/data-centre info ----
+RF:setRegionRealmLabel(RF.myRealm)
 
 ---- Utility Functions ----
 function isin(input_table, val)
@@ -173,82 +174,6 @@ LFGOpened:SetScript ("OnEvent", function (self, event, ...)
 	-- When the LFG panel is opened called the above function --
 	RF.UpdateList()
 end)
-
-
-function setRegionRealmLabel()
-	if (GetLocale() == "enUS") then
-		--> Iterate over the different NA regions. If it hits any of them run the 'na_realms' function which will differntiate inside
-		if isin(servers.na_nyc, RF.myRealm) then
-			RF.realms = 'na_realms'
-			RF.label = 'NA'
-			RF.server_id = 'nyc'
-			print(posts.na_post)
-		end
-
-		if isin(servers.na_chicago, RF.myRealm) then
-			RF.realms = 'na_realms'
-			RF.label = 'NA'
-			RF.server_id = 'chicago'
-			print(posts.na_post)
-		end
-
-		if isin(servers.na_la, RF.myRealm) then
-			RF.realms = 'na_realms'
-			RF.label = 'NA'
-			RF.server_id = 'la'
-			print(posts.na_post)
-		end
-
-		if isin(servers.na_phoenix, RF.myRealm) then
-			RF.realms = 'na_realms'
-			RF.label = 'NA'
-			RF.server_id = 'phoenix'
-			print(posts.na_post)
-		end
-
-		if isin(servers.br_realms, RF.myRealm) then
-			RF.label = 'BR'
-			print(posts.br_post)
-		end
-
-		if isin(servers.la_realms, RF.myRealm) then
-			RF.label = 'LA'
-			print(posts.la_post)
-		end
-
-		if isin(servers.oc_realms, RF.myRealm) then
-			RF.label = 'OC'
-			print(posts.oc_post)
-		end
-
-	else --> Do EU realms because the locale code was not enUS
-		if isin(servers.eu_en_realms, RF.myRealm) then
-			print(posts.en_post)
-		end	
-
-		if isin(servers.eu_de_realms, RF.myRealm) then
-			print(posts.de_post)
-		end	
-
-		if isin(servers.eu_es_realms, RF.myRealm) then
-			print(posts.es_post)
-		end	
-
-		if isin(servers.eu_it_realms, RF.myRealm) then
-			print(posts.it_post)
-		end	
-
-		if isin(servers.eu_ru_realms, RF.myRealm) then
-			print(posts.ru_post)
-		end	
-
-		if isin(servers.eu_fr_realms, RF.myRealm) then
-			print(posts.fr_post)
-		end	
-	end
-end
-
-
 -------- Legacy Code --------
 
 -- function RegionFilter:FilterEU(realms, label)
