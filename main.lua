@@ -2,16 +2,19 @@ RegionFilter = LibStub ("AceAddon-3.0"):NewAddon ("RegionFilter", "AceConsole-3.
 
 local RegionFilter = RegionFilter
 
-local f = CreateFrame ("frame", nil, UIParent)
-f:RegisterEvent ("LFG_LIST_SEARCH_RESULTS_RECEIVED")
+---- Crucical code to detect when the LFG pane is opened ----
+local LFGOpened = CreateFrame ("frame", nil, UIParent)
+LFGOpened:RegisterEvent ("LFG_LIST_SEARCH_RESULTS_RECEIVED")
 
 function RegionFilter:UpdateList()
 	LFGListSearchPanel_UpdateResultList (LFGListFrame.SearchPanel)
 	LFGListSearchPanel_UpdateResults (LFGListFrame.SearchPanel)
 end
 
-f:SetScript ("OnEvent", function (self, event, ...)
+LFGOpened:SetScript ("OnEvent", function (self, event, ...)
+	-- When the LFG panel is opened called the above function --
 	RegionFilter:ScheduleTimer ("UpdateList", 1)
+	print('opened LFG')
 end)
 
 RF = select(2, ...)
@@ -19,6 +22,18 @@ servers = RF.servers
 posts = RF.posts
 cat = RF.cat
 
+RF.togRemove = 1
+
+SLASH_RFILTER1 = "/rfilter"
+SlashCmdList["RFILTER"] = function(msg)
+	if RF.togRemove == 1 then
+		RF.togRemove = 0
+		print('|cff00ffff[Region Filter]|: Not filtering outside regions')
+	elseif RF.togRemove == 0 then
+		RF.togRemove = 1
+		print('|cff00ffff[Region Filter]|: Filtering outside regions')
+	end
+end
 
 local realm_unsubbed = GetRealmName()
 RF.myRealm = string.gsub(realm_unsubbed, "'", "")
@@ -64,25 +79,28 @@ end
 -- 	self.ActivityName:SetTextColor (0, 1, 0)
 -- end
 function removeEntriesNA(results)
-	for idx = #results, 1, -1 do
-		local resultID = results[idx]
-		local searchResults = C_LFGList.GetSearchResultInfo(resultID)
-		local activitiyID1 = searchResults.activityID
-		local leaderName = searchResults.leaderName
-		if leaderName ~= nil then
-			local name, realm = sanitiseName(leaderName)
-			print(name, realm)
-			if isin(servers.na_nyc, realm)
-			or isin(servers.na_la, realm)
-			or isin(servers.na_chicago, realm)
-			or isin(servers.na_phoenix, realm) then
-				-- do nothing
-			else
-				table.remove(results, idx)
-			-- TODO account for entries where there is no realm (home server)
-			end	
+	if RF.togRemove == 1 then
+		for idx = #results, 1, -1 do
+			local resultID = results[idx]
+			local searchResults = C_LFGList.GetSearchResultInfo(resultID)
+			local activitiyID1 = searchResults.activityID
+			local leaderName = searchResults.leaderName
+			if leaderName ~= nil then
+				local name, realm = sanitiseName(leaderName)
+				if isin(servers.na_nyc, realm)
+				or isin(servers.na_la, realm)
+				or isin(servers.na_chicago, realm)
+				or isin(servers.na_phoenix, realm) then
+					-- do nothing
+				else
+					table.remove(results, idx)
+				-- TODO account for entries where there is no realm (home server)
+				end	
+			end
 		end
+	elseif RF.togRemove == 0 then
 	end
+
 end
 
 function updateEntriesNA(results)
@@ -146,7 +164,6 @@ function updateEntriesNA(results)
 				end
 			end
 		else -- home server
-			print('home server', leaderName)
 			local activityName = C_LFGList.GetActivityInfo (activityID)
 			results.ActivityName:SetText ("|cFF00CCFF["..cat.home.."]|r " .. activityName)
 			results.ActivityName:SetTextColor (0, 1, 0)
@@ -156,12 +173,9 @@ end
 
 
 -- Check the region of each group and highlights if its in your region. This code runs on a region per region basis. See below.
-function RegionFilter:FilterNA(realms, label)
-
+function RegionFilter:FilterNA()
 	hooksecurefunc ("LFGListUtil_SortSearchResults", removeEntriesNA)
-
 	hooksecurefunc ("LFGListSearchEntry_Update", updateEntriesNA)
-	
 end
 
 
