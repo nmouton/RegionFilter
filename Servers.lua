@@ -1,7 +1,7 @@
 -- This is a list of all the RF.servers. It is much much easier to keep it all in here --
 
 local RF = select(2, ...)
-RF.na_servers = {}
+RF.servers = {}
 local na_nyc = {"NA", "NYC"}
 local na_chi = {"NA", "CHI"}
 local na_phx = {"NA", "PHX"}
@@ -10,7 +10,7 @@ local br = {"BR", "nil"}
 local la = {"LA", "nil"}
 local oc = {"OC", "nil"}
 
-RF.na_servers = {
+RF.servers = {
     -- North America: New York City
     AeriePeak = na_nyc,
     AltarofStorms = na_nyc,
@@ -279,14 +279,16 @@ RF.posts.br_post = "|cff00ffff[Region Filter]:|r You are an on a |cffFF6EB4BR|r 
 RF.posts.la_post = "|cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4LA|r Server"
 
 ---- Categorisation Strings ----
--- These are used to differentiate the NA data centres.
--- Other locations just use their own label
+-- These are used to differentiate the data centres and regions in the text labels for each LFG entry
 RF.cat = {}
 RF.cat.home = 'HOME'
 RF.cat.na_nyc_id = 'NA-NYC'
 RF.cat.na_la_id = 'NA-LA'
-RF.cat.na_phoenix_id = 'NA-PHX'
-RF.cat.na_chicago_id = 'NA-CHI'
+RF.cat.na_phx_id = 'NA-PHX'
+RF.cat.na_chi_id = 'NA-CHI'
+RF.cat.br = 'BR'
+RF.cat.la = 'LA'
+RF.cat.oc = 'OC'
 
 -- -- EU posts
 -- RF.posts.en_post = |cff00ffff[Region Filter]:|r You are an on an |cffFF6EB4EN|r Server
