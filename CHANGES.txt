@@ -22,5 +22,12 @@ Version 1.0:
 	- Now colours your home server and labels it [HOME]. 
 	- Colours home data centre if you're on an NA server.
 Version 1.1:
-	- Updated to work with 8.1.5
+	- Updated to be compliant with 8.1.5
+
+Version 1.2:
+	- Updated to be compliant with 8.2
+
+Version 1.3:
+	- Slash commands! '/rfilter' no toggles the removal of groups from outside your region.
+	- Codebase has been massively simplified, almost a complete overhaul of everything. As a results its much faster, easier to maintain and likely to last.
 

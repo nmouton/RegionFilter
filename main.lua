@@ -4,6 +4,7 @@ local posts = RF.posts
 local cat = RF.cat
 
 -- TODO make the removeEntries subcomponents functions for simpler code
+-- TODO GUI
 -- By default filter outside data centers to yes --
 RF.togRemove = 1
 
@@ -147,7 +148,7 @@ function RF.updateEntries(results)
 		end
 	end
 end
--- TODO GUI
+
 ---- Print When Loaded ----
 local welcomePrompt = CreateFrame("Frame")
 welcomePrompt:RegisterEvent("PLAYER_LOGIN")
