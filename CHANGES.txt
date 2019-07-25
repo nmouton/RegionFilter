@@ -30,4 +30,6 @@ Version 1.2:
 Version 1.3:
 	- Slash commands! '/rfilter' no toggles the removal of groups from outside your region.
 	- Codebase has been massively simplified, almost a complete overhaul of everything. As a results its much faster, easier to maintain and likely to last.
+	- No more dependencies. No ACE library anymore, all native lua/wow api stuff.
+	- Show user a bit more info about their data centre
 

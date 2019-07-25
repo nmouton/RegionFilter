@@ -1,15 +1,5 @@
 local RF = select(2, ...)
 
----- Utility Functions ----
-function RF:isin(input_table, val)
-	for index, value in pairs(input_table) do
-		if value == val then
-			return true
-		end
-	end
-	return false
-end
-
 function RF:sanitiseName(leaderName)
 	-- returns name, realm when passed a name-realm full name
 	if string.match(leaderName, "-") then

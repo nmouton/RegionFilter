@@ -206,7 +206,6 @@ RF.servers = {
     Frostmane = na_la,
     Frostwolf = na_la,
     Garithos = na_la,
-    Gundrak = na_la,
     Gurubashi = na_la,
     Hakkar = na_la,
     KhazModan = na_la,
