@@ -15,7 +15,6 @@ SlashCmdList["RFILTER"] = function(msg)
 		RF.togRemove = 1
 		print('|cff00ffff[Region Filter]: |cffFF6EB4 Filtering outside regions')
 	end
-	RF.UpdateList()
 end
 
 local realm_unsubbed = GetRealmName()
@@ -44,6 +43,7 @@ function RF.removeEntriesNA(results)
 				end	
 			end
 		end
+	-- If the flag is switched off
 	elseif RF.togRemove == 0 then
 	end
 
@@ -100,13 +100,12 @@ function RF.updateEntriesNA(results)
 					results.ActivityName:SetTextColor (0, 1, 0)
 				end
 
-			-- elseif RF.realms ~= 'na_realms' then
-			-- 	if RF:isin(RF.realms, realm) then
-			-- 		local activityName = C_LFGList.GetActivityInfo (activityID)
-			-- 		results.ActivityName:SetText ("|cFFFFFF00["..RF.label.."]|r " .. activityName)
-			-- 		results.ActivityName:SetTextColor (0, 1, 0)
-			-- 	end
-			-- end
+			elseif RF.realms ~= 'na_realms' then
+				if RF:isin(RF.realms, realm) then -- in the case of a non na realm instead of passing a string to this function we pass a table containing servers
+					local activityName = C_LFGList.GetActivityInfo (activityID)
+					results.ActivityName:SetText ("|cFFFFFF00["..RF.label.."]|r " .. activityName)
+					results.ActivityName:SetTextColor (0, 1, 0)
+				end
 			end
 		else -- home server
 			local activityName = C_LFGList.GetActivityInfo (activityID)
@@ -116,6 +115,13 @@ function RF.updateEntriesNA(results)
 	end
 end
 
+function RF.removeEntriesEU(results)
+end
+
+function RF.updateEntriesEU(results)
+end
+-- TODO EU Realms
+-- TODO GUI
 ---- Print When Loaded ----
 local welcomePrompt = CreateFrame("Frame")
 welcomePrompt:RegisterEvent("PLAYER_LOGIN")
@@ -126,20 +132,25 @@ welcomePrompt:SetScript("OnEvent", function(f, event)
 	end
 end)
 
+hooksecurefunc ("LFGListSearchEntry_Update", RF.updateEntriesNA)
+hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntriesNA)
+
 ---- Crucical code to detect when the LFG pane is opened ----
-local LFGOpened = CreateFrame ("frame", nil, UIParent)
-LFGOpened:RegisterEvent ("LFG_LIST_SEARCH_RESULTS_RECEIVED")
+-- local LFGOpened = CreateFrame ("frame", nil, UIParent)
+-- LFGOpened:RegisterEvent ("LFG_LIST_SEARCH_RESULTS_RECEIVED")
 
-function RF.UpdateList()
-	-- Call the two functions which filter and label LFG entries --
-	hooksecurefunc ("LFGListSearchEntry_Update", RF.updateEntriesNA)
-	hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntriesNA)
-end
+-- function RF.UpdateList()
+-- 	-- Call the two functions which filter and label LFG entries --
+-- 	hooksecurefunc ("LFGListSearchEntry_Update", RF.updateEntriesNA)
+-- 	hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntriesNA)
+-- end
 
-LFGOpened:SetScript ("OnEvent", function (self, event, ...)
-	-- When the LFG panel is opened called the above function --
-	RF.UpdateList()
-end)
+-- LFGOpened:SetScript ("OnEvent", function (self, event, ...)
+-- 	-- When the LFG panel is opened called the above function --
+-- 	RF.UpdateList()
+-- end)
+
+
 -------- Legacy Code --------
 
 -- function RegionFilter:FilterEU(realms, label)
