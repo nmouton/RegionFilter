@@ -17,6 +17,8 @@ SlashCmdList["RFILTER"] = function(msg)
 		RF.togRemove = 1
 		print('|cff00ffff[Region Filter]: |cffFF6EB4 Filtering outside regions')
 	end
+	LFGListSearchPanel_UpdateResultList (LFGListFrame.SearchPanel)
+	LFGListSearchPanel_UpdateResults 	(LFGListFrame.SearchPanel)
 end
 
 local realm_unsubbed = GetRealmName()
@@ -149,19 +151,21 @@ function RF.updateEntries(results)
 	end
 end
 
+hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntries)
+hooksecurefunc ("LFGListSearchEntry_Update", 	 RF.updateEntries)
+
+
 ---- Print When Loaded ----
 local welcomePrompt = CreateFrame("Frame")
 welcomePrompt:RegisterEvent("PLAYER_LOGIN")
-welcomePrompt:SetScript("OnEvent", function(_)
+welcomePrompt:SetScript("OnEvent", function(_, event)
 	if event == "PLAYER_LOGIN" then
 		print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.3|r. If there any bugs please report them via https://wow.curseforge.com/projects/regionfilter or https://github.com/jamesb93/RegionFilter")
 		print(RF.postType)
 	end
 end)
 
-hooksecurefunc ("LFGListSearchEntry_Update", RF.updateEntries)
-hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntries)
-
+-------- OLD CODE --------
 ---- Crucical code to detect when the LFG pane is opened ----
 -- local LFGOpened = CreateFrame ("frame", nil, UIParent)
 -- LFGOpened:RegisterEvent ("LFG_LIST_SEARCH_RESULTS_RECEIVED")
