@@ -33,3 +33,6 @@ Version 1.3:
 	- No more dependencies. No ACE library anymore, all native lua/wow api stuff.
 	- Show user a bit more info about their data centre
 
+Version 1.3.1:
+	- Fixed bug with marking own data centre
+
