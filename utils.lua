@@ -20,8 +20,3 @@ function RF:splitName(leaderName)
 	local t_realm = string.gsub(t_realm, "'", "")
 	return t_name, t_realm
 end
-
-function RF:colourNotNA(id, activityName)
-	results.ActivityName:SetText ("|cFFFFFF00["..id.."]|r " .. activityName)
-	results.ActivityName:SetTextColor (0, 1, 0)
-end
