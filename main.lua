@@ -8,19 +8,6 @@ local cat = RF.cat
 -- By default filter outside data centers to yes --
 RF.togRemove = true
 
-SLASH_RFILTER1 = "/rfilter"
-SlashCmdList["RFILTER"] = function(msg)
-	if RF.togRemove == true then
-		RF.togRemove = false
-		print('|cff00ffff[Region Filter]: |cffFF6EB4 Not filtering outside regions')
-	else
-		RF.togRemove = true
-		print('|cff00ffff[Region Filter]: |cffFF6EB4 Filtering outside regions')
-	end
-	LFGListSearchPanel_UpdateResultList (LFGListFrame.SearchPanel)
-	LFGListSearchPanel_UpdateResults 	(LFGListFrame.SearchPanel)
-end
-
 local realm_unsubbed = GetRealmName()
 RF.myRealm = string.gsub(realm_unsubbed, "'", "")
 ---- Set variables for realm/data-centre info ----
@@ -39,33 +26,36 @@ function RF.removeEntries(results)
 			if leaderName ~= nil then -- Filter out nil entries from LFG Pane
 				local name, realm = RF:sanitiseName(leaderName)
 				local info = servers[realm]
-				local region, dataCentre = info[1], info[2]
-	
-				if RF.region == 'NA' then -- if your own region is NA colour code NA servers appropriately
-					if region == 'NA' then
-					else
-						table.remove(results, idx)
+				if info ~= nil then
+					local region = info[1]
+		
+					if RF.region == 'NA' then -- if your own region is NA colour code NA servers appropriately
+						if region == 'NA' then
+							-- Do nothing because its in your region
+						else
+							table.remove(results, idx)
+						end
 					end
-				end
 
-				if RF.region == 'BR' then -- if your own region is NA colour code NA servers appropriately
-					if region == 'BR' then
-					else
-						table.remove(results, idx)
+					if RF.region == 'BR' then -- if your own region is NA colour code BR servers appropriately
+						if region == 'BR' then
+						else
+							table.remove(results, idx)
+						end
 					end
-				end
 
-				if RF.region == 'LA' then -- if your own region is NA colour code NA servers appropriately
-					if region == 'LA' then
-					else
-						table.remove(results, idx)
+					if RF.region == 'LA' then -- if your own region is NA colour code LA servers appropriately
+						if region == 'LA' then
+						else
+							table.remove(results, idx)
+						end
 					end
-				end
 
-				if RF.region == 'OC' then -- if your own region is NA colour code NA servers appropriately
-					if region == 'OC' then
-					else
-						table.remove(results, idx)
+					if RF.region == 'OC' then -- if your own region is NA colour code OC servers appropriately
+						if region == 'OC' then
+						else
+							table.remove(results, idx)
+						end
 					end
 				end
 			end
@@ -85,64 +75,69 @@ function RF.updateEntries(results)
 	if leaderName ~= nil then -- Filter out nil entries from LFG Pane
 		local name, realm = RF:sanitiseName(leaderName)
 		local info = servers[realm]
-		local region, dataCentre = info[1], info[2]
+		if info ~= nil then
+			local region, dataCentre = info[1], info[2]
 
-		if RF.region == 'NA' then -- if your own region is NA colour code NA servers appropriately
-			if region == 'NA' then
-				if dataCentre == 'NYC' then
-					if RF.dataCentre == dataCentre then -- if your personal data centre matches the queried leader/realm name (colour coding for home data centres)
-						results.ActivityName:SetText ("|cFF00CCFF["..cat.na_nyc_id.."]|r " .. activityName)
-					else
-						results.ActivityName:SetText ("|cFFFFFF00["..cat.na_nyc_id.."]|r " .. activityName)
+			if RF.region == 'NA' then -- if your own region is NA colour code NA servers appropriately
+				if region == 'NA' then
+					if dataCentre == 'NYC' then
+						if RF.dataCentre == dataCentre then -- if your personal data centre matches the queried leader/realm name (colour coding for home data centres)
+							results.ActivityName:SetText ("|cFF00CCFF["..cat.na_nyc_id.."]|r " .. activityName)
+						else
+							results.ActivityName:SetText ("|cFFFFFF00["..cat.na_nyc_id.."]|r " .. activityName)
+						end
+						results.ActivityName:SetTextColor (0, 1, 0)
 					end
-					results.ActivityName:SetTextColor (0, 1, 0)
+
+					if dataCentre == 'PHX' then
+						if RF.dataCentre == dataCentre then
+							results.ActivityName:SetText ("|cFF00CCFF["..cat.na_phx_id.."]|r " .. activityName)
+						else
+							results.ActivityName:SetText ("|cFFFFFF00["..cat.na_phx_id.."]|r " .. activityName)
+						end
+						results.ActivityName:SetTextColor (0, 1, 0)
+					end
+
+					if dataCentre == 'LA' then
+						if RF.dataCentre == dataCentre then
+							results.ActivityName:SetText ("|cFF00CCFF["..cat.na_la_id.."]|r " .. activityName)
+						else
+							results.ActivityName:SetText ("|cFFFFFF00["..cat.na_la_id.."]|r " .. activityName)
+						end
+						results.ActivityName:SetTextColor (0, 1, 0)
+					end
+
+					if dataCentre == 'CHI' then
+						if RF.dataCentre == dataCentre then
+							results.ActivityName:SetText ("|cFF00CCFF["..cat.na_chi_id.."]|r " .. activityName)
+						else
+							results.ActivityName:SetText ("|cFFFFFF00["..cat.na_chi_id.."]|r " .. activityName)
+						end
+						results.ActivityName:SetTextColor (0, 1, 0)
+					end
 				end
+			end
 
-				if dataCentre == 'PHX' then
-					if RF.dataCentre == dataCentre then
-						results.ActivityName:SetText ("|cFF00CCFF["..cat.na_phx_id.."]|r " .. activityName)
-					else
-						results.ActivityName:SetText ("|cFFFFFF00["..cat.na_phx_id.."]|r " .. activityName)
-					end
-					results.ActivityName:SetTextColor (0, 1, 0)
-				end
-
-				if dataCentre == 'LA' then
-					if RF.dataCentre == dataCentre then
-						results.ActivityName:SetText ("|cFF00CCFF["..cat.na_la_id.."]|r " .. activityName)
-					else
-						results.ActivityName:SetText ("|cFFFFFF00["..cat.na_la_id.."]|r " .. activityName)
-					end
-					results.ActivityName:SetTextColor (0, 1, 0)
-				end
-
-				if dataCentre == 'CHI' then
-					if RF.dataCentre == dataCentre then
-						results.ActivityName:SetText ("|cFF00CCFF["..cat.na_chi_id.."]|r " .. activityName)
-					else
-						results.ActivityName:SetText ("|cFFFFFF00["..cat.na_chi_id.."]|r " .. activityName)
-					end
+			-- non-NA realms
+			if RF.region == 'BR' then
+				if region == 'BR' then
+					results.ActivityName:SetText ("|cFFFFFF00["..cat.br.."]|r " .. activityName)
 					results.ActivityName:SetTextColor (0, 1, 0)
 				end
 			end
-		end
 
-		-- non-NA realms
-		if RF.region == 'BR' then
-			if region == 'BR' then
-				RF:colourNotNA(cat.br, activityName)
+			if RF.region == 'LA' then
+				if region == 'LA' then		
+					results.ActivityName:SetText ("|cFFFFFF00["..cat.la.."]|r " .. activityName)
+					results.ActivityName:SetTextColor (0, 1, 0)	
+				end
 			end
-		end
-
-		if RF.region == 'LA' then
-			if region == 'LA' then		
-				RF:colourNotNA(cat.la, activityName)		
-			end
-		end
-		
-		if RF.region == 'OC' then
-			if region == 'OC' then
-				RF:colourNotNA(cat.oc, activityName)		
+			
+			if RF.region == 'OC' then
+				if region == 'OC' then
+					results.ActivityName:SetText ("|cFFFFFF00["..cat.oc.."]|r " .. activityName)
+					results.ActivityName:SetTextColor (0, 1, 0)	
+				end
 			end
 		end
 	end
@@ -151,6 +146,18 @@ end
 hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntries)
 hooksecurefunc ("LFGListSearchEntry_Update", 	 RF.updateEntries)
 
+SLASH_RFILTER1 = "/rfilter"
+SlashCmdList["RFILTER"] = function(msg)
+	if RF.togRemove == true then
+		RF.togRemove = false
+		print('|cff00ffff[Region Filter]: |cffFF6EB4 Not filtering outside regions')
+	else
+		RF.togRemove = true
+		print('|cff00ffff[Region Filter]: |cffFF6EB4 Filtering outside regions')
+	end
+	LFGListSearchPanel_UpdateResultList (LFGListFrame.SearchPanel)
+	LFGListSearchPanel_UpdateResults 	(LFGListFrame.SearchPanel)
+end
 
 ---- Print When Loaded ----
 local welcomePrompt = CreateFrame("Frame")
