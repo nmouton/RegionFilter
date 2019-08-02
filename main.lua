@@ -10,7 +10,7 @@ RF.togRemove = true
 
 local realm_unsubbed = GetRealmName()
 local spaced_realm = string.gsub(realm_unsubbed, "%s+", "")
-RF.myRealm = string.gsub(realm_unsubbed, "'", "")
+RF.myRealm = string.gsub(spaced_realm, "'", "")
 ---- Set variables for realm/data-centre info ----
 
 RF:setRegionRealmLabel(RF.myRealm)
