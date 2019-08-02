@@ -9,7 +9,7 @@ local cat = RF.cat
 RF.togRemove = true
 
 local realm_unsubbed = GetRealmName()
-RF.myRealm = string.gsub(realm_unsubbed, "'", "")
+RF.myRealm = RF:sanitiseRealm(realm_unsubbed)
 ---- Set variables for realm/data-centre info ----
 
 RF:setRegionRealmLabel(RF.myRealm)
@@ -143,8 +143,9 @@ function RF.updateEntries(results)
 	end
 end
 
-hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntries)
 hooksecurefunc ("LFGListSearchEntry_Update", 	 RF.updateEntries)
+hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntries)
+
 
 SLASH_RFILTER1 = "/rfilter"
 SlashCmdList["RFILTER"] = function(msg)
