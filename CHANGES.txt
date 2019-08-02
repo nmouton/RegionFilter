@@ -36,3 +36,6 @@ Version 1.3:
 Version 1.3.1:
 	- Fixed bug with marking own data centre
 
+Version 1.3.4:
+	- Fixed bug with servers such as Moon Guard having a space in the name
+
