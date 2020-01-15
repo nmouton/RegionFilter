@@ -42,3 +42,6 @@ Version 1.3.4:
 Version 1.3.5:
 	- Error with string naming for space removal
 
+Version 1.3.6
+	- Fix version number misreporting
+	- Update for Patch 8.3

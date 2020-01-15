@@ -166,23 +166,7 @@ local welcomePrompt = CreateFrame("Frame")
 welcomePrompt:RegisterEvent("PLAYER_LOGIN")
 welcomePrompt:SetScript("OnEvent", function(_, event)
 	if event == "PLAYER_LOGIN" then
-		print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.3.3|r. If there any bugs please report them via https://wow.curseforge.com/projects/regionfilter or https://github.com/jamesb93/RegionFilter")
+		print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.3.6|r. If there any bugs please report them via https://wow.curseforge.com/projects/regionfilter or https://github.com/jamesb93/RegionFilter")
 		print(RF.postType)
 	end
 end)
-
--------- OLD CODE --------
----- Crucical code to detect when the LFG pane is opened ----
--- local LFGOpened = CreateFrame ("frame", nil, UIParent)
--- LFGOpened:RegisterEvent ("LFG_LIST_SEARCH_RESULTS_RECEIVED")
-
--- function RF.UpdateList()
--- 	-- Call the two functions which filter and label LFG entries --
--- 	hooksecurefunc ("LFGListSearchEntry_Update", RF.updateEntriesNA)
--- 	hooksecurefunc ("LFGListUtil_SortSearchResults", RF.removeEntriesNA)
--- end
-
--- LFGOpened:SetScript ("OnEvent", function (self, event, ...)
--- 	-- When the LFG panel is opened called the above function --
--- 	RF.UpdateList()
--- end)
