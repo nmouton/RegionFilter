@@ -45,3 +45,6 @@ Version 1.3.5:
 Version 1.3.6
 	- Fix version number misreporting
 	- Update for Patch 8.3
+
+Version 1.3.7
+	- Slim down code
