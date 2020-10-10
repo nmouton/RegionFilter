@@ -48,3 +48,6 @@ Version 1.3.6
 
 Version 1.3.7
 	- Slim down code
+
+Version 1.3.8
+	- Auto releasing so CurseBreaker likes me
