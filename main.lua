@@ -130,7 +130,8 @@ local welcomePrompt = CreateFrame("Frame")
 welcomePrompt:RegisterEvent("PLAYER_LOGIN")
 welcomePrompt:SetScript("OnEvent", function(_, event)
 	if event == "PLAYER_LOGIN" then
-		print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.3.7|r. If there any bugs please report them via https://wow.curseforge.com/projects/regionfilter or https://github.com/jamesb93/RegionFilter")
+		print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.3.7|r. If there any bugs please report them at https://github.com/jamesb93/RegionFilter")
+		print("If possible, stop using CurseForge (soon/now to be Overwolf) and try CurseBreaker https://www.github.com/AcidWeb/CurseBreaker.")
 		print(RF.postType)
 	end
 end)

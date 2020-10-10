@@ -6,9 +6,9 @@ local na_nyc = {"NA", "NYC"}
 local na_chi = {"NA", "CHI"}
 local na_phx = {"NA", "PHX"}
 local na_la = {"NA", "LA"}
-local br = {"BR", "nil"}
-local la = {"LA", "nil"}
-local oc = {"OC", "nil"}
+local br = {"BR", nil}
+local la = {"LA", nil}
+local oc = {"OC", nil}
 
 RF.servers = {
     -- North America: New York City
