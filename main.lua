@@ -1,43 +1,53 @@
 local RF = select(2, ...)
 local servers = RF.servers
 local posts = RF.posts
-local cat = RF.cat
+RF.version = "1.4.0"
+RF.togRemove = false
 
--- TODO make the removeEntries subcomponents functions for simpler code
--- TODO GUI
--- By default filter outside data centers to yes --
-RF.togRemove = true
-
-local realm_unsubbed = GetRealmName()
-local spaced_realm = string.gsub(realm_unsubbed, "%s+", "")
+local spaced_realm = string.gsub(GetRealmName(), "%s+", "")
 RF.myRealm = string.gsub(spaced_realm, "'", "")
 ---- Set variables for realm/data-centre info ----
+RF.info = servers[RF.myRealm] 
+RF.region, RF.dataCentre = RF.info[1], RF.info[2]
 
-RF:setRegionRealmLabel(RF.myRealm)
+if RF.region == 'NA' then
+	if RF.dataCentre == 'EAST' then
+		RF.postType = posts.na_east_post
+	end
 
----- Removing Enrties when togRemove is enabled
-function RF.removeEntries(results)
-	if RF.togRemove then
-		for idx=1, #results  do
-			local resultID = results[idx]
-			local searchResults = C_LFGList.GetSearchResultInfo(resultID)
-			local activitiyID1 = searchResults.activityID
-			local leaderName = searchResults.leaderName
-
-			if leaderName ~= nil then -- Filter out nil entries from LFG Pane
-				local name, realm = RF:sanitiseName(leaderName)
-				local info = servers[realm]
-				if info ~= nil then
-					local region = info[1]
-					if RF.region ~= region then
-						table.remove(results, idx)
-					end
-				end
-			end
-			table.sort(results)
-		end
+	if RF.dataCentre == 'WEST' then
+		RF.postType = posts.na_west_post
 	end
 end
+
+if RF.region == 'OC' then RF.postType = posts.oc_post end
+if RF.region == 'LA' then RF.postType = posts.la_post end
+if RF.region == 'BR' then RF.postType = posts.br_post end
+---- Removing Enrties when togRemove is enabled
+-- function RF.removeEntries(results)
+-- 	if RF.togRemove then
+-- 		for i=1, #results do
+-- 			local resultID = results[i]
+-- 			local searchResults = C_LFGList.GetSearchResultInfo(resultID)
+
+-- 			local leaderName = searchResults.leaderName
+
+-- 			if leaderName ~= nil then -- Filter out nil entries from LFG Pane
+-- 				local name, realm = RF:sanitiseName(leaderName)
+-- 				local info = servers[realm]
+-- 				if info ~= nil then
+-- 					local region = info[1]
+-- 					if RF.region ~= region then
+-- 						table.remove(results, i)
+-- 					end
+-- 				end
+-- 			end
+-- 		end
+-- 	end
+-- 	table.sort(results)
+-- 	LFGListFrame.SearchPanel.totalResults = #results
+-- 	return true
+-- end
 
 ---- Updating the text of entries
 function RF.updateEntries(results)
@@ -49,92 +59,63 @@ function RF.updateEntries(results)
 	if leaderName ~= nil then -- Filter out nil entries from LFG Pane
 		local name, realm = RF:sanitiseName(leaderName)
 		local info = servers[realm]
-		if info ~= nil then
+		if info then
 			local region, dataCentre = info[1], info[2]
-
-			if RF.region == 'NA' then -- if your own region is NA colour code NA servers appropriately
-				if region == 'NA' then
-					if dataCentre == 'NYC' then
-						if RF.dataCentre == dataCentre then -- if your personal data centre matches the queried leader/realm name (colour coding for home data centres)
-							results.ActivityName:SetText("|cFF00CCFF["..cat.na_nyc_id.."]|r " .. activityName)
-						else
-							results.ActivityName:SetText("|cFFFFFF00["..cat.na_nyc_id.."]|r " .. activityName)
-						end
-						results.ActivityName:SetTextColor(0, 1, 0)
-					end
-
-					if dataCentre == 'PHX' then
-						if RF.dataCentre == dataCentre then
-							results.ActivityName:SetText("|cFF00CCFF["..cat.na_phx_id.."]|r " .. activityName)
-						else
-							results.ActivityName:SetText("|cFFFFFF00["..cat.na_phx_id.."]|r " .. activityName)
-						end
-						results.ActivityName:SetTextColor(0, 1, 0)
-					end
-
-					if dataCentre == 'LA' then
-						if RF.dataCentre == dataCentre then
-							results.ActivityName:SetText ("|cFF00CCFF["..cat.na_la_id.."]|r " .. activityName)
-						else
-							results.ActivityName:SetText ("|cFFFFFF00["..cat.na_la_id.."]|r " .. activityName)
-						end
-						results.ActivityName:SetTextColor(0, 1, 0)
-					end
-
-					if dataCentre == 'CHI' then
-						if RF.dataCentre == dataCentre then
-							results.ActivityName:SetText("|cFF00CCFF["..cat.na_chi_id.."]|r " .. activityName)
-						else
-							results.ActivityName:SetText("|cFFFFFF00["..cat.na_chi_id.."]|r " .. activityName)
-						end
-						results.ActivityName:SetTextColor(0, 1, 0)
-					end
-				end
-			end
-
-			-- non-NA realms
-			if RF.region == 'BR' and region == 'BR' then
-				results.ActivityName:SetText("|cFFFFFF00["..cat.br.."]|r " .. activityName)
-				results.ActivityName:SetTextColor(0, 1, 0)
-			end
-
-			if RF.region == 'LA' and region == 'LA' then
-				results.ActivityName:SetText("|cFFFFFF00["..cat.la.."]|r " .. activityName)
-				results.ActivityName:SetTextColor(0, 1, 0)	
-			end
-			
-			if RF.region == 'OC' and region == 'OC' then
-				results.ActivityName:SetText("|cFFFFFF00["..cat.oc.."]|r " .. activityName)
-				results.ActivityName:SetTextColor(0, 1, 0)	
+			if region == "NA" then
+				results.ActivityName:SetText(
+					RF:regionTag(
+						RF.region, 
+						region, 
+						region..'-'..dataCentre, 
+						activityName,
+						RF.dataCentre,
+						dataCentre
+					)
+				)
+				results.ActivityName:SetTextColor(
+					RF:dungeonText(RF.region, region)
+				)
+			else
+				results.ActivityName:SetText(
+					RF:regionTag(
+						RF.region, 
+						region, 
+						region, 
+						activityName,
+						nil, nil
+					)
+				)
+				results.ActivityName:SetTextColor(
+					RF:dungeonText(RF.region, region)
+				)
 			end
 		end
 	end
 end
 
 
-SLASH_RFILTER1 = "/rfilter"
-SlashCmdList["RFILTER"] = function(msg)
-	if RF.togRemove == true then
-		RF.togRemove = false
-		print('|cff00ffff[Region Filter]: |cffFF6EB4 Not filtering outside regions')
-	else
-		RF.togRemove = true
-		print('|cff00ffff[Region Filter]: |cffFF6EB4 Filtering outside regions')
-	end
-	LFGListSearchPanel_UpdateResultList (LFGListFrame.SearchPanel)
-	LFGListSearchPanel_UpdateResults 	(LFGListFrame.SearchPanel)
-end
+-- SLASH_RFILTER1 = "/rfilter"
+-- SlashCmdList["RFILTER"] = function(msg)
+-- 	if RF.togRemove then
+-- 		print('|cff00ffff[Region Filter]: |cffFF6EB4 Not filtering outside regions')
+-- 	else
+-- 		print('|cff00ffff[Region Filter]: |cffFF6EB4 Filtering outside regions')
+-- 	end
+-- 	RF.togRemove = not RF.togRemove
+-- 	LFGListSearchPanel_UpdateResultList (LFGListFrame.SearchPanel)
+-- 	LFGListSearchPanel_UpdateResults 	(LFGListFrame.SearchPanel)
+-- end
 
 ---- Print When Loaded ----
 local welcomePrompt = CreateFrame("Frame")
 welcomePrompt:RegisterEvent("PLAYER_LOGIN")
 welcomePrompt:SetScript("OnEvent", function(_, event)
 	if event == "PLAYER_LOGIN" then
-		print("|cff00ffff[Region Filter]|r |cffffcc00Version 1.3.9|r. If there any bugs please report them at https://github.com/jamesb93/RegionFilter")
+		print("|cff00ffff[Region Filter]|r |cffffcc00Version "..RF.version.."|r. If there any bugs please report them at https://github.com/jamesb93/RegionFilter")
 		print("|cff00ffff[Region Filter]|r If possible, stop using CurseForge (soon/now to be Overwolf) and try CurseBreaker https://www.github.com/AcidWeb/CurseBreaker.")
 		print(RF.postType)
 	end
 end)
 
-hooksecurefunc("LFGListUtil_SortSearchResults", RF.removeEntries)
+-- hooksecurefunc("LFGListUtil_SortSearchResults", RF.sortEntries)
 hooksecurefunc("LFGListSearchEntry_Update", 	RF.updateEntries)
