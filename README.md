@@ -13,3 +13,7 @@ Any bugs, please make a report here and if you have suggestions or PR's I'm happ
 # Future
 
 The next major version will have a GUI for managing colours for each server region and datacentre group. I'll also try my best to make this work for EU, although I've heard that region-ing isn't as much as an issue on their client.
+
+# Thanks
+
+Thanks to https://github.com/Pretzellent for his contribution to the project.
