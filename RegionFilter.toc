@@ -1,7 +1,7 @@
-## Interface: 80300
+## Interface: 90105
 ## Title: Region Filter
 ## Notes: Tags groups in the native LFG search if they are from your server and data-centre
-## Version: 1.4.0
+## Version: 1.5.0
 
 utils.lua
 servers.lua

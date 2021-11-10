@@ -2,23 +2,10 @@ local RF = select(2, ...)
 
 RF.consolePrefix = "|cff00ffff[Region Filter]:|r "
 
-function RF:regionTag(playerRegion, listRegion, label, activity, playerDC, listDC)
+function RF:regionTag(label, activity, regionColour)
 	-- Creates and colours the REGION tag
-	local colour = '|cFFA9A9A9['
-
-	if playerDC ~= nil and listDC ~= nil then -- if we're talking murican
-		if playerRegion == listRegion and playerDC == listDC then
-			colour = '|cFFFF69B4['
-		elseif playerRegion == listRegion and playerDC ~= listDC then
-			colour = '|cFFFF0000['
-		end	
-	else
-		if playerRegion == listRegion then 
-			colour = '|cFFFF69B4['
-		end
-	end
-	return colour..label..']|r '..activity
-end
+	return regionColour..'['..label..']|r '..activity
+en
 
 function RF:dungeonText(playerRegion, listRegion)
 	-- Colours the activity name if its in an ideal region
