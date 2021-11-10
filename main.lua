@@ -1,7 +1,7 @@
 local RF = select(2, ...)
 local servers = RF.servers
 local posts = RF.posts
-RF.version = "1.4.0"
+RF.version = "1.5.0"
 RF.togRemove = false
 
 local spaced_realm = string.gsub(GetRealmName(), "%s+", "")
@@ -60,35 +60,22 @@ function RF.updateEntries(results)
 		local name, realm = RF:sanitiseName(leaderName)
 		local info = servers[realm]
 		if info then
-			local region, dataCentre = info[1], info[2]
+			local region, dataCentre, regionColour = info[1], info[2], info[3]
 			if region == "NA" then
-				results.ActivityName:SetText(
-					RF:regionTag(
-						RF.region, 
-						region, 
-						region..'-'..dataCentre, 
-						activityName,
-						RF.dataCentre,
-						dataCentre
-					)
-				)
-				results.ActivityName:SetTextColor(
-					RF:dungeonText(RF.region, region)
-				)
+				regionLabel = region..'-'..dataCentre;
 			else
+				regionLabel = region
+			end
 				results.ActivityName:SetText(
 					RF:regionTag(
-						RF.region, 
-						region, 
-						region, 
+						regionLabel, 
 						activityName,
-						nil, nil
+						regionColour
 					)
 				)
 				results.ActivityName:SetTextColor(
 					RF:dungeonText(RF.region, region)
 				)
-			end
 		end
 	end
 end
@@ -112,10 +99,9 @@ welcomePrompt:RegisterEvent("PLAYER_LOGIN")
 welcomePrompt:SetScript("OnEvent", function(_, event)
 	if event == "PLAYER_LOGIN" then
 		print("|cff00ffff[Region Filter]|r |cffffcc00Version "..RF.version.."|r. If there any bugs please report them at https://github.com/jamesb93/RegionFilter")
-		print("|cff00ffff[Region Filter]|r If possible, stop using CurseForge (soon/now to be Overwolf) and try CurseBreaker https://www.github.com/AcidWeb/CurseBreaker.")
 		print(RF.postType)
 	end
 end)
 
 -- hooksecurefunc("LFGListUtil_SortSearchResults", RF.sortEntries)
-hooksecurefunc("LFGListSearchEntry_Update", 	RF.updateEntries)
+hooksecurefunc("LFGListSearchEntry_Update", RF.updateEntries)

@@ -2,13 +2,18 @@
 
 local RF = select(2, ...)
 RF.servers = {}
-local na_east = {"NA", "EAST"}
-local na_west = {"NA", "WEST"}
-local br = {"BR", nil}
-local la = {"LA", nil}
-local oc = {"OC", nil}
 
-local postColour =  ' |cffFF6EB4'
+local na_east_colour = '|cff00FF98'
+local na_west_colour = '|cffAAD372'
+local br_colour = '|cffFFFFFF'
+local la_colour = '|cffFF7D0A'
+local oc_colour = '|cffC79C6E'
+
+local na_east = {"NA", "EAST", na_east_colour}
+local na_west = {"NA", "WEST", na_west_colour}
+local br = {"BR", nil, br_colour}
+local la = {"LA", nil, la_colour}
+local oc = {"OC", nil, oc_colour}
 
 RF.servers = {
     -- North America: Old New York City
@@ -270,8 +275,8 @@ RF.servers = {
 ---- Posts ----
 RF.posts = {}
 -- NA posts
-RF.posts.na_east_post = RF.consolePrefix..'You are an on an'..postColour..'NA-EAST|r Server'
-RF.posts.na_west_post = RF.consolePrefix..'You are an on an'..postColour..'NA-WEST|r Server'
-RF.posts.oc_post      = RF.consolePrefix..'You are an on an'..postColour..'OC|r Server'
-RF.posts.la_post      = RF.consolePrefix..'You are an on an'..postColour..'LA|r Server'
-RF.posts.br_post      = RF.consolePrefix..'You are an on a'..postColour..'BR|r Server'
+RF.posts.na_east_post = RF.consolePrefix..'You are an on an '..na_east_colour..'NA-EAST|r Server'
+RF.posts.na_west_post = RF.consolePrefix..'You are an on an '..na_west_colour..'NA-WEST|r Server'
+RF.posts.oc_post      = RF.consolePrefix..'You are an on an '..oc_colour..'OC|r Server'
+RF.posts.la_post      = RF.consolePrefix..'You are an on an '..la_colour..'LA|r Server'
+RF.posts.br_post      = RF.consolePrefix..'You are an on a '..br_colour..'BR|r Server'
