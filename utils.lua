@@ -5,7 +5,7 @@ RF.consolePrefix = "|cff00ffff[Region Filter]:|r "
 function RF:regionTag(label, activity, regionColour)
 	-- Creates and colours the REGION tag
 	return regionColour..'['..label..']|r '..activity
-en
+end
 
 function RF:dungeonText(playerRegion, listRegion)
 	-- Colours the activity name if its in an ideal region
